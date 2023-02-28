@@ -1,0 +1,12 @@
+html, body, #root {
+  min-height: 100%;
+  height: 100%;
+}
+
+body {
+  background-color: #1A202C !important;
+}
+
+.gavel-icon {
+  transform: rotate(-90deg);
+}

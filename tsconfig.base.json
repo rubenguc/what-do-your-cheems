@@ -13,8 +13,13 @@
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "esModuleInterop": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@web/*": ["apps/web/src/*"],
+      "@server/*": ["apps/server/src/*"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
+
