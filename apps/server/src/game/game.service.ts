@@ -19,7 +19,10 @@ export class GameService {
   async createRoom({ roomCode, username, socketId }: CreateRoomServiceProps) {
     const room: Room = {
       roomCreator: username,
-      config: {},
+      config: {
+        totalRounds: 0,
+        gameMode: '',
+      },
       round: 1,
       playerCards: [],
       judgeCards: [],
@@ -62,7 +65,7 @@ export class GameService {
             socketId,
           },
         ],
-      }),
+      })
     );
   }
 

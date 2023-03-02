@@ -1,6 +1,6 @@
 export interface Config {
-  totalRounds?: number;
-  gameMode?: string;
+  totalRounds: number;
+  gameMode: string;
 }
 
 export interface ReceiveCard {

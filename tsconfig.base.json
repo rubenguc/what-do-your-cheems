@@ -17,6 +17,7 @@
     "baseUrl": ".",
     "paths": {
       "@server/*": ["apps/server/src/*"],
+      "@wdyc/game-interfaces": ["libs/game-interfaces/src/index.ts"],
       "@web/*": ["apps/web/src/*"]
     }
   },

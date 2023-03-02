@@ -11,17 +11,29 @@ import { Server, Socket } from 'socket.io';
 import {
   CreateRoomPayload,
   CreateRoomResponse,
+  CreatorFinishGamePayload,
+  CreatorFinishGameResponse,
+  GetRoomInfoPayload,
+  GetRoomInfoResponse,
   GetRoomPlayersPayload,
-  GetWaitingRoomInfoResponse,
+  GetRoomPlayersResponse,
   JoinRoomPayload,
   JoinRoomResponse,
-  SocketResponse,
-} from './dto/gateway-dt';
+  LeaveRoomPayload,
+  LeaveRoomResponse,
+  ReconnectPayload,
+  ReconnectResponse,
+  SetCardPayload,
+  SetCardResponse,
+  SetWinnerCardPayload,
+  SetWinnerCardResponse,
+  StartGamePayload,
+  StartGameResponse,
+} from '@wdyc/game-interfaces';
+import { Card, Judge, MemeCard, PhraseCard, Room } from '@wdyc/game-interfaces';
 import { GameService } from './game.service';
-import { Card, Judge, MemeCard, PhraseCard, Room } from './types';
 import { MemeService } from '../meme/meme.service';
 import { PhraseToAnswerService } from '../phrase-to-answer/phrase-to-answer.service';
-import { StartGamePayload } from './dto/gateway-dt';
 import {
   handleSocketResponse,
   getTotalCardsToPlayers,
@@ -61,7 +73,7 @@ export class GameGateway
     this.logger.log('Init sockets');
   }
 
-  handleDisconnect(client: any) {
+  handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
   }
 
@@ -76,7 +88,7 @@ export class GameGateway
   async handleCreateRoom(
     client: Socket,
     payload: CreateRoomPayload
-  ): Promise<SocketResponse<CreateRoomResponse>> {
+  ): Promise<CreateRoomResponse> {
     try {
       const { username } = payload;
 
@@ -118,7 +130,7 @@ export class GameGateway
   async handleJoinRoom(
     client: Socket,
     payload: JoinRoomPayload
-  ): Promise<SocketResponse<JoinRoomResponse>> {
+  ): Promise<JoinRoomResponse> {
     let decodedRoom: Room;
     try {
       const { roomCode, username } = payload;
@@ -192,7 +204,7 @@ export class GameGateway
   async handleGetWaitingRoomInfo(
     client: Socket,
     payload: GetRoomPlayersPayload
-  ): Promise<SocketResponse<any>> {
+  ): Promise<GetRoomPlayersResponse> {
     let decodedRoom: Room;
     try {
       const { roomCode, username } = payload;
@@ -251,7 +263,10 @@ export class GameGateway
   }
 
   @SubscribeMessage(LEAVE_ROOM)
-  async handleLeaveRoom(client: Socket, payload: any) {
+  async handleLeaveRoom(
+    client: Socket,
+    payload: LeaveRoomPayload
+  ): Promise<LeaveRoomResponse> {
     let decodedRoom: Room;
     try {
       const { roomCode, username } = payload;
@@ -317,7 +332,7 @@ export class GameGateway
   async handleStartGame(
     client: Socket,
     payload: StartGamePayload
-  ): Promise<SocketResponse<null>> {
+  ): Promise<StartGameResponse> {
     let decodedRoom: Room;
     try {
       const { roomCode, roomConfig } = payload;
@@ -343,7 +358,7 @@ export class GameGateway
 
       if (players[playerInfoIndex]?.username !== decodedRoom.roomCreator) {
         return handleSocketResponse({
-          message: `you can\'t start the game`,
+          message: `you can't start the game`,
           error: true,
         });
       }
@@ -460,8 +475,8 @@ export class GameGateway
   @SubscribeMessage(GET_ROOM_INFO)
   async handleGetRoomInfo(
     client: Socket,
-    payload: any
-  ): Promise<SocketResponse<any>> {
+    payload: GetRoomInfoPayload
+  ): Promise<GetRoomInfoResponse> {
     let decodedRoom: Room;
     try {
       const { roomCode, username } = payload;
@@ -543,8 +558,8 @@ export class GameGateway
   @SubscribeMessage(SET_CARD)
   async handleSetCard(
     client: Socket,
-    payload: any
-  ): Promise<SocketResponse<null>> {
+    payload: SetCardPayload
+  ): Promise<SetCardResponse> {
     let decodedRoom: Room;
     try {
       const { roomCode, username, card } = payload;
@@ -654,11 +669,11 @@ export class GameGateway
     }
   }
 
-  @SubscribeMessage('set-winner-card')
+  @SubscribeMessage(SET_WINNER_CARD)
   async handleSetWinnerCard(
     client: Socket,
-    payload: any
-  ): Promise<SocketResponse<any>> {
+    payload: SetWinnerCardPayload
+  ): Promise<SetWinnerCardResponse> {
     let decodedRoom: Room;
     try {
       const { roomCode, username, card } = payload;
@@ -682,10 +697,11 @@ export class GameGateway
         });
       }
 
-      const winnerPlayer = card.username;
+      // TODO: card MUSTN'T contain username, maybe a token?
+      const winnerPlayer = (card as any).username;
 
       const winnerPlayerIndex = decodedRoom.players.findIndex(
-        (p) => p.username === card.username
+        (p) => p.username === (card as any).username
       );
 
       this.server.to(roomCode).emit('winner-card', winnerPlayer);
@@ -806,8 +822,8 @@ export class GameGateway
   @SubscribeMessage(CREATOR_FINISH_GAME)
   async handleFinishGame(
     client: Socket,
-    payload: any
-  ): Promise<SocketResponse<any>> {
+    payload: CreatorFinishGamePayload
+  ): Promise<CreatorFinishGameResponse> {
     let decodedRoom: Room;
     try {
       const { roomCode, username } = payload;
@@ -859,8 +875,8 @@ export class GameGateway
   @SubscribeMessage(RECONNECT)
   async handleReconnect(
     client: Socket,
-    payload: any
-  ): Promise<SocketResponse<any>> {
+    payload: ReconnectPayload
+  ): Promise<ReconnectResponse> {
     let decodedRoom: Room;
     try {
       const { username, roomCode } = payload;
