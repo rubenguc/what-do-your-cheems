@@ -16,10 +16,9 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@web/*": ["apps/web/src/*"],
-      "@server/*": ["apps/server/src/*"]
+      "@server/*": ["apps/server/src/*"],
+      "@web/*": ["apps/web/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]
 }
-
