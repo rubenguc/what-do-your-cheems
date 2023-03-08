@@ -6,7 +6,7 @@ An online card game based on what do your meme card game.
 ## links
 
 - [Web](https://wdyc-web.vercel.app/)
-- [Telegram bot](#https://t.me/wdyc_bot)
+- [Telegram bot](https://t.me/wdyc_bot)
 - App (comming soon)
 
 
