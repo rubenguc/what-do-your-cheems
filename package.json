@@ -1,5 +1,5 @@
 {
-  "name": "wdyc",
+  "name": "what-do-your-cheems",
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
@@ -7,7 +7,7 @@
     "start:web": "nx run web:serve",
     "start:app": "nx run app:run-android"
   },
-  "private": true,
+  "private": false,
   "dependencies": {
     "@chakra-ui/react": "^2.5.1",
     "@emotion/react": "^11.10.6",
@@ -54,7 +54,6 @@
     "sharp": "^0.31.3",
     "socket.io": "^4.6.1",
     "socket.io-client": "^4.6.1",
-    "tamagui": "^1.5.24",
     "tslib": "^2.3.0",
     "zustand": "^4.3.4"
   },
