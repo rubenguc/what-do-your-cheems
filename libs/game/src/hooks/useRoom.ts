@@ -1,34 +1,51 @@
-import { useState, useEffect } from 'react';
-import { useSocketContext, useToast } from '../common';
-import useStore from '../../store';
-// import {
-//   SocketResponse,
-//   GetRoomInfoResponse,
-// } from "../../interfaces/socketResponses-interfaces";
-import { useNavigate } from 'react-router-dom';
-// import { Card, MemeCard, PhraseCard } from "interfaces/room-interfaces";
+import { useState, useEffect, useCallback } from 'react';
+import {
+  CreatorFinishGamePayload,
+  CreatorFinishGameResponse,
+  GetRoomInfoResponse,
+  SetCardPayload,
+  SetCardResponse,
+  SetWinnerCardPayload,
+  SetWinnerCardResponse,
+  MemeCard,
+  PhraseCard,
+  Card,
+  RoomPlayer,
+  RoomJudge,
+  ReceiveCard,
+  Judge,
+} from '@wdyc/game-interfaces';
+import { useSocketContext } from './useSocketContext';
+import { useUserContext } from './useUserContext';
 
-export const useRoom = () => {
-  // store
-  const user = useStore((state) => state.user);
-  const clear = useStore((state) => state.clear);
+interface useRoomProps {
+  navigate: (route: string) => void;
+  onShowError: (message: string) => void;
+  onShowMessage: (message: string, persistent?: boolean) => void;
+  onClear: () => void;
+}
 
+export const useRoom = ({
+  navigate,
+  onShowError,
+  onClear,
+  onShowMessage,
+}: useRoomProps) => {
   // hooks
-  const navigate = useNavigate();
   const { isSocketOnline, socket } = useSocketContext();
-  const { showErrorToast, showSuccessToast } = useToast();
+  const { user } = useUserContext();
+
+  if (!user) throw new Error('User context needed');
 
   // state
 
   // cards to play
-  const [cardsToSelect, setCardToSelect] = useState<any[]>([]);
-  const [judge, setJudge] = useState<any>({
+  const [cardsToSelect, setCardToSelect] = useState<Card[]>([]);
+  const [judge, setJudge] = useState<RoomJudge>({
     username: '',
     card: {},
   });
-  const [players, setPlayers] = useState<
-    { username: string; numberOfWins: number }[]
-  >([]);
+  const [players, setPlayers] = useState<RoomPlayer[]>([]);
   const [game, setGame] = useState<any>({
     isEnded: false,
     config: {},
@@ -45,51 +62,60 @@ export const useRoom = () => {
 
   const isRoomCreator = game.roomCreator === user.username;
 
-  const setCard = (card: any) => {
-    // TODO: fix types
-    const data = {
+  const setCard = (card: Card) => {
+    const data: SetCardPayload | SetWinnerCardPayload = {
       ...user,
       card,
     };
 
     const socketMethod = isJudge ? 'set-winner-card' : 'set-card';
 
-    socket?.emit(socketMethod, data, (resp: any) => {
-      if (!isJudge)
-        setCardToSelect((state) =>
-          state.filter((c) => {
-            if (c.type === 'MEME') {
-              return c.url !== (card as any).url;
-            }
+    socket?.emit(
+      socketMethod,
+      data,
+      (resp: SetCardResponse | SetWinnerCardResponse) => {
+        if (!isJudge)
+          setCardToSelect((state) =>
+            state.filter((c) => {
+              if (c.type === 'MEME') {
+                return c.url !== (card as MemeCard).url;
+              }
 
-            if (c.type === 'PHRASE') {
-              return c.content !== (card as any).content;
-            }
-          })
-        );
-    });
+              if (c.type === 'PHRASE') {
+                return c.content !== (card as PhraseCard).content;
+              }
+
+              return c;
+            })
+          );
+      }
+    );
   };
 
-  const goToHome = () => {
-    clear();
+  const goToHome = useCallback(() => {
+    onClear();
     navigate('/');
-  };
+  }, [navigate, onClear]);
 
   const finishGame = () => {
     if (!isRoomCreator) return;
-    const data = {
+    const data: CreatorFinishGamePayload = {
       roomCode: user.roomCode,
       username: user.username,
     };
 
-    socket?.emit('creator-finish-game', data, (resp: any) => {
-      if (resp.error) showErrorToast(resp.message);
-    });
+    socket?.emit(
+      'creator-finish-game',
+      data,
+      (resp: CreatorFinishGameResponse) => {
+        if (resp.error) onShowError(resp.message);
+      }
+    );
   };
 
   useEffect(() => {
     if (!user.roomCode) return;
-    socket?.emit('get-room-info', user, (resp: any) => {
+    socket?.emit('get-room-info', user, (resp: GetRoomInfoResponse) => {
       const {
         cardsToSelect,
         judge,
@@ -99,7 +125,7 @@ export const useRoom = () => {
         round,
         config,
         roomCreator,
-      } = resp.data;
+      } = resp.data!;
 
       setCardToSelect(cardsToSelect || []);
       setPlayers(players || []);
@@ -118,24 +144,22 @@ export const useRoom = () => {
         roomCreator,
       }));
     });
-
-    return () => {
-      socket?.off('get-room-info');
-    };
-  }, [isSocketOnline, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSocketOnline, user.roomCode]);
 
   useEffect(() => {
-    socket?.on('player-set-card', (resp: any) => {
-      showSuccessToast(`${resp} set a card`);
+    socket?.on('player-set-card', (resp: string) => {
+      // onShowError(`${resp} set a card`);
+      // TODO: update player in bottom
     });
 
     return () => {
       socket?.off('player-set-card');
     };
-  }, [isSocketOnline]);
+  }, [isSocketOnline, onShowError, socket]);
 
   useEffect(() => {
-    socket?.on('select-judge-card', (resp: any) => {
+    socket?.on('select-judge-card', (resp: ReceiveCard[]) => {
       if (isJudge)
         setPlayerCards(
           resp.map((c) => ({
@@ -148,24 +172,26 @@ export const useRoom = () => {
     return () => {
       socket?.off('select-judge-card');
     };
-  }, [isSocketOnline, isJudge]);
+  }, [isSocketOnline, isJudge, socket]);
 
   useEffect(() => {
     // socket called when all players (except de judge) set a card
-    socket?.on('all-players-ready', (resp: any) => {
+    socket?.on('all-players-ready', () => {
       setWaitingForJudge(true);
-      showSuccessToast(`now, judge will select the winner card`);
+      // onShowError(`now, judge will select the winner card`);
+      // TODO: show toast saying: waiting for judge
     });
 
     return () => {
       socket?.off('all-players-ready');
     };
-  }, [isSocketOnline, isJudge]);
+  }, [isSocketOnline, isJudge, socket]);
 
   useEffect(() => {
     // socket called when judge select the winner card
-    socket?.on('winner-card', (resp: any) => {
-      showSuccessToast(`winner ${resp}`);
+    // TODO: users should manage with id not username
+    socket?.on('winner-card', (resp: string) => {
+      onShowError(`winner ${resp}`);
       setPlayers((state) =>
         state.map((player) =>
           player.username === resp
@@ -178,16 +204,16 @@ export const useRoom = () => {
     return () => {
       socket?.off('winner-card');
     };
-  }, [isSocketOnline, isJudge]);
+  }, [isSocketOnline, isJudge, socket, onShowError]);
 
   useEffect(() => {
     // socket called when judge select the winner card
-    socket?.on('next-round', (resp: any) => {
+    socket?.on('next-round', (resp: { judge: Judge }) => {
       setJudge(resp.judge);
       setWaitingForJudge(false);
       setPlayerCards([]);
-      showSuccessToast(`starting next round..`);
-      setGame((state) => ({
+      onShowMessage(`starting next round..`);
+      setGame((state: any) => ({
         ...state,
         round: state.round + 1,
       }));
@@ -196,11 +222,11 @@ export const useRoom = () => {
     return () => {
       socket?.off('next-round');
     };
-  }, [isSocketOnline]);
+  }, [isSocketOnline, onShowError, onShowMessage, socket]);
 
   useEffect(() => {
-    socket?.on('end-game', (resp: any) => {
-      showSuccessToast(`End game, winner: ${resp}`);
+    socket?.on('end-game', (resp: string) => {
+      onShowError(`End game, winner: ${resp}`);
       setGame({
         isEnded: true,
         winner: resp,
@@ -212,12 +238,12 @@ export const useRoom = () => {
     return () => {
       socket?.off('end-game');
     };
-  }, [socket]);
+  }, [onShowError, socket]);
 
   useEffect(() => {
-    socket?.on('new-card', (resp: { card: string }) => {
+    socket?.on('new-card', (resp: { card: Card }) => {
       if (resp.card) {
-        setCardToSelect((state: any) => [...state, resp.card]);
+        setCardToSelect((state) => [...state, resp.card]);
       }
     });
 
@@ -234,7 +260,7 @@ export const useRoom = () => {
     return () => {
       socket?.off('finish-game');
     };
-  }, [socket]);
+  }, [goToHome, socket]);
 
   return {
     isJudge,

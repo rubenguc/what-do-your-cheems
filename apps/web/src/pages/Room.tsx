@@ -9,15 +9,24 @@ import {
 } from '@chakra-ui/react';
 import { FinishGame, JudgeCard, Players } from '../components/pages/room';
 import { Cards } from '../components/pages/room/Cards';
-import { useRoom } from '../hooks/pages/useRoom';
-import useStore from '../store';
 import JSConfetti from 'js-confetti';
 import { useEffect } from 'react';
+import { useRoom, useUserContext } from '@wdyc/game';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '../hooks/common/useToast';
 
 export const Room = () => {
   const jsConfetti = new JSConfetti();
+  const navigate = useNavigate();
+  const { showErrorToast, showSuccessToast } = useToast();
 
-  const user = useStore((state) => state.user);
+  const { user, clear } = useUserContext();
+
+  const onClear = () => {
+    localStorage.removeItem('user');
+    clear();
+  };
+
   const {
     judge,
     cardsToSelect,
@@ -30,7 +39,12 @@ export const Room = () => {
     game,
     goToHome,
     finishGame,
-  } = useRoom();
+  } = useRoom({
+    navigate,
+    onShowError: showErrorToast,
+    onClear,
+    onShowMessage: showSuccessToast,
+  });
 
   const userIsWinner = game.winner && game.winner === user.username;
 
@@ -44,7 +58,8 @@ export const Room = () => {
         clearInterval(interval);
       };
     }
-  }, [game?.winner]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [game.winner, userIsWinner]);
 
   if (game.isEnded) {
     return (

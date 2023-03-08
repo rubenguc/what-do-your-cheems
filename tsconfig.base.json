@@ -14,9 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "@server/*": ["apps/server/src/*"],
+      "@wdyc/game": ["libs/game/src/index.ts"],
       "@wdyc/game-interfaces": ["libs/game-interfaces/src/index.ts"],
       "@web/*": ["apps/web/src/*"]
     }

@@ -1,11 +1,13 @@
 import { toast } from 'react-toastify';
 
 export const useToast = () => {
-  const showSuccessToast = (message: string) => {
+  const showSuccessToast = (message: string, persistent?: boolean) => {
     toast.success(message, {
-      // toastId: "success-toast",
+      toastId: 'success-toast',
       position: 'top-center',
-      draggable: true,
+      draggable: !persistent,
+      autoClose: false,
+      isLoading: persistent,
     });
   };
 

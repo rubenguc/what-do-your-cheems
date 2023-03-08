@@ -53,7 +53,8 @@
       },
       "library": {
         "style": "none",
-        "linter": "eslint"
+        "linter": "eslint",
+        "unitTestRunner": "vitest"
       }
     }
   }

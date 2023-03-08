@@ -908,6 +908,14 @@ export class GameGateway
         });
       }
 
+      decodedRoom.players[playerIndex].socketId = client.id;
+
+      await this.redisService.updateRoom({
+        roomCode,
+        room: decodedRoom,
+      });
+      client.join(roomCode);
+
       return handleSocketResponse({
         message: 'ok',
         data: {

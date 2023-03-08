@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
 import { Container, Icon, useBreakpointValue } from '@chakra-ui/react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import useStore from '../store';
+import { useUserContext } from '@wdyc/game';
 
 export const PageWrapper = () => {
-  const user = useStore((state) => state.user);
-
+  const { user } = useUserContext();
   const navigate = useNavigate();
 
   useEffect(() => {

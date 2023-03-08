@@ -1,5 +1,5 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { Home, Room, WaitingRoom } from './pages';
+import { Home, WaitingRoom, Room } from './pages';
 import { PageWrapper } from './layout';
 
 const router = createBrowserRouter([

@@ -10,11 +10,11 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { CreateRoom, JoinRoom } from '@web/components/pages/home';
+import { CreateRoom, JoinRoom } from '../components/pages/home';
 import { Image } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BsTelegram, BsGithub } from 'react-icons/bs';
-// import pkg from "../../package.json";
+import pkg from '../../../../package.json';
 
 export const Home = () => {
   return (
@@ -47,7 +47,7 @@ export const Home = () => {
               {'What do your \ncheems?'}
             </Text>
             <Text fontSize="sm" color="white" fontWeight="bold">
-              v
+              v {pkg.version}
             </Text>
           </Stack>
         </AnimatePresence>
@@ -82,7 +82,7 @@ export const Home = () => {
             </TabPanels>
           </Tabs>
           <VStack gap={1} alignItems="start">
-            <a href="https://t.me/wdyc_bot" target="_blank">
+            <a href="https://t.me/wdyc_bot" target="_blank" rel="noreferrer">
               <Button
                 leftIcon={<BsTelegram />}
                 size="sm"
@@ -93,7 +93,11 @@ export const Home = () => {
                 Upload your own memes and phrases
               </Button>
             </a>
-            <a href="https://github.com/rubenguc/wdyc-web" target="_blank">
+            <a
+              href="https://github.com/rubenguc/wdyc-web"
+              target="_blank"
+              rel="noreferrer"
+            >
               <Button
                 leftIcon={<BsGithub />}
                 size="sm"

@@ -56,6 +56,19 @@ export interface Judge {
   receivedCards: ReceiveCard[];
 }
 
+export interface RoomJudge {
+  card: any;
+  username: string;
+}
+export interface WaitRoomPlayer {
+  username: string;
+}
+
+export interface RoomPlayer {
+  username: string;
+  numberOfWins: number;
+}
+
 // Socket interfaces
 
 export interface SocketResponse<T> {
@@ -79,7 +92,7 @@ export type JoinRoomResponse = SocketResponse<CommonResponse>;
 export type GetRoomPlayersPayload = CommonPayload;
 export type GetRoomPlayersResponse = SocketResponse<{
   isRoomCreator: boolean;
-  players: { username: string }[];
+  players: WaitRoomPlayer[];
 }>;
 
 // Leave Room
@@ -101,15 +114,9 @@ export type StartGameResponse = SocketResponse<null>;
 
 export type GetRoomInfoPayload = CommonPayload;
 export type GetRoomInfoResponse = SocketResponse<{
-  players: {
-    username: string;
-    numberOfWins: number;
-  }[];
+  players: RoomPlayer[];
   cardsToSelect: Card[];
-  judge: {
-    username: string;
-    card: any;
-  };
+  judge: RoomJudge;
   playerCards: ReceiveCard[];
   waitingForJudge: boolean;
   round: number;
@@ -143,3 +150,23 @@ export type ReconnectResponse = SocketResponse<{
     isStarted: boolean;
   };
 }>;
+
+// Game
+export interface User {
+  username: string;
+  roomCode: string;
+  redirectTo?: string;
+}
+
+interface LoginProps {
+  roomCode: string;
+  username: string;
+  redirectTo?: string;
+}
+
+export type LoginState = (props: LoginProps) => void;
+
+export enum Adapater {
+  RN = 'React native',
+  R = 'React',
+}

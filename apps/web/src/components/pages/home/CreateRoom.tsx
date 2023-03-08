@@ -1,8 +1,26 @@
 import { Box, Button, Heading, Input, Stack } from '@chakra-ui/react';
-import { useHome } from '../../../hooks/pages/useHome';
+import { useHome, useUserContext } from '@wdyc/game';
+import { CreateRoomResponse } from '@wdyc/game-interfaces';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '../../../hooks/common/useToast';
 
 export const CreateRoom = () => {
-  const { loginForm, onChangeForm, createRoom } = useHome();
+  const navigate = useNavigate();
+  const { showErrorToast } = useToast();
+
+  const { login } = useUserContext();
+
+  const onLogin = (data: CreateRoomResponse['data']) => {
+    if (!data) return;
+    localStorage.setItem('user', JSON.stringify(data));
+    login(data);
+  };
+
+  const { loginForm, onChangeForm, createRoom } = useHome({
+    navigate,
+    onShowError: showErrorToast,
+    onLogin,
+  });
 
   return (
     <>

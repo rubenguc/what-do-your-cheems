@@ -13,12 +13,21 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { RoomConfig, WaitingPlayers } from '../components/pages/waitingRoom';
-import { useWaitingRoom } from '../hooks/pages/useWaitingRoom';
 import { BiCopy } from 'react-icons/bi';
-import useStore from '../store';
+import { useUserContext, useWaitingRoom } from '@wdyc/game';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '../hooks/common/useToast';
 
 export const WaitingRoom = () => {
-  const store = useStore((state) => state.user);
+  const navigate = useNavigate();
+  const { showErrorToast } = useToast();
+
+  const { user, clear } = useUserContext();
+
+  const onClear = () => {
+    localStorage.removeItem('user');
+    clear();
+  };
 
   const {
     players,
@@ -28,16 +37,20 @@ export const WaitingRoom = () => {
     isRoomCreator,
     leaveRoom,
     isLoading,
-  } = useWaitingRoom();
+  } = useWaitingRoom({
+    navigate,
+    onShowError: showErrorToast,
+    onClear,
+  });
 
   const { isOpen, onToggle, onClose } = useDisclosure();
 
   const copyToClipboard = async () => {
     try {
-      navigator.clipboard.writeText(store.roomCode);
+      navigator.clipboard.writeText(user.roomCode);
       onToggle();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -46,24 +59,26 @@ export const WaitingRoom = () => {
       mt="40"
       bg={'gray.50'}
       rounded={'xl'}
-      p={{ base: 4, sm: 6, md: 8 }}
+      p={4}
       spacing={{ base: 8 }}
       maxW={{ lg: 'lg' }}
       w="full"
       mx="auto"
+      zIndex="99999"
     >
       <Heading
         color={'gray.800'}
         lineHeight={1.1}
+        textAlign="center"
         fontSize={{ base: '2xl', sm: '3xl', md: '4xl' }}
       >
         Waiting Room
       </Heading>
       <HStack>
         <Text color={'gray.800'} fontSize="3xl" fontWeight="bold">
-          code: {store.roomCode}
+          code: {user.roomCode}
         </Text>
-        {store.roomCode && (
+        {user.roomCode && (
           <Popover
             returnFocusOnClose={false}
             isOpen={isOpen}
@@ -77,14 +92,13 @@ export const WaitingRoom = () => {
                 onClick={copyToClipboard}
               />
             </PopoverTrigger>
-            <PopoverContent bgColor="#EDF2F7">
+            <PopoverContent bgColor="#EDF2F7" w="fit-content">
               <PopoverBody>Copied</PopoverBody>
             </PopoverContent>
           </Popover>
         )}
       </HStack>
-      <Stack direction={{ base: 'column', lg: 'row' }} gap={4}>
-        {/* TODO: make working game config */}
+      <Stack direction={'column'} gap={4}>
         {isRoomCreator && (
           <RoomConfig
             startGame={startGame}
