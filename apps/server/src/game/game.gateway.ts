@@ -9,6 +9,8 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import {
+  closeRoomPayload,
+  closeRoomResponse,
   CreateRoomPayload,
   CreateRoomResponse,
   CreatorFinishGamePayload,
@@ -54,6 +56,7 @@ import {
   START_GAME,
 } from './paths';
 import { customAlphabet } from 'nanoid';
+import { CLOSE_ROOM } from './paths';
 
 @WebSocketGateway({ cors: true })
 export class GameGateway
@@ -859,6 +862,59 @@ export class GameGateway
       this.sentry.instance().captureException(error, (scope) => {
         scope.setExtras({
           path: CREATOR_FINISH_GAME,
+          clientId: client.id,
+          payload,
+          decodedRoom,
+        });
+        return scope;
+      });
+      return handleSocketResponse({
+        message: 'server error',
+        error: true,
+      });
+    }
+  }
+
+  @SubscribeMessage(CLOSE_ROOM)
+  async handleCloseRoom(
+    client: Socket,
+    payload: closeRoomPayload
+  ): Promise<closeRoomResponse> {
+    let decodedRoom: Room;
+    try {
+      const { roomCode, username } = payload;
+      const room = await this.redisService.getRoomByKey(roomCode);
+
+      if (!room) {
+        return handleSocketResponse({
+          message: 'room not found',
+          error: true,
+        });
+      }
+
+      const decodedRoom: Room = JSON.parse(room);
+
+      const userIsCreator = decodedRoom.roomCreator === username;
+
+      if (!userIsCreator) {
+        return handleSocketResponse({
+          message: 'you are not the room creator',
+          error: true,
+        });
+      }
+
+      await this.redisService.deleteRoom(roomCode);
+
+      this.server.in(roomCode).emit('close-room');
+
+      return handleSocketResponse({
+        message: 'ok',
+      });
+    } catch (error) {
+      this.logger.error(error);
+      this.sentry.instance().captureException(error, (scope) => {
+        scope.setExtras({
+          path: CLOSE_ROOM,
           clientId: client.id,
           payload,
           decodedRoom,

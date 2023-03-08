@@ -86,6 +86,18 @@ export const useWaitingRoom = ({
     };
   }, [isSocketOnline, navigate, socket]);
 
+  useEffect(() => {
+    isSocketOnline &&
+      socket?.on('close-room', () => {
+        onClear();
+        navigate('/');
+      });
+
+    return () => {
+      socket?.off('close-room');
+    };
+  }, [isSocketOnline, navigate, onClear, socket]);
+
   const startGame = () => {
     const data = {
       roomCode: user.roomCode,
@@ -124,13 +136,28 @@ export const useWaitingRoom = ({
     }
   };
 
+  const closeRoom = () => {
+    if (isSocketOnline) {
+      setIsLoading(true);
+      socket?.emit('close-room', user, (res: LeaveRoomResponse) => {
+        if (res.error) {
+          setIsLoading(false);
+          return onShowError(res.message);
+        }
+        onClear();
+        navigate('/');
+      });
+    }
+  };
+
   return {
-    players,
-    startGame,
-    roomConfig,
-    onChangeRoomConfig,
+    closeRoom,
+    isLoading,
     isRoomCreator,
     leaveRoom,
-    isLoading,
+    onChangeRoomConfig,
+    players,
+    roomConfig,
+    startGame,
   };
 };

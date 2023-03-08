@@ -142,6 +142,11 @@ export type SetWinnerCardResponse = SocketResponse<null>;
 export type CreatorFinishGamePayload = CommonPayload;
 export type CreatorFinishGameResponse = SocketResponse<null>;
 
+// Creator Finish Game
+
+export type closeRoomPayload = CommonPayload;
+export type closeRoomResponse = SocketResponse<null>;
+
 // Reconnect
 
 export type ReconnectPayload = CommonPayload;

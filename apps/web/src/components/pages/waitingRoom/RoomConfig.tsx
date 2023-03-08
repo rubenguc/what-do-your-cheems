@@ -1,13 +1,14 @@
 import { Box, Button, Heading, Select, Stack, Text } from '@chakra-ui/react';
+import { GAME_MODES, ROUNDS_TO_SELECT } from '@wdyc/game';
+import { RoomConfig as IRoomConfig } from '@wdyc/game-interfaces';
 import { FC } from 'react';
-// import { RoomConfigForm } from "interfaces/form-interfaces";
-import { GAME_MODES, ROUNDS_TO_SELECT } from '../../../utils/constants';
 
 interface RoomConfigProps {
   startGame: () => void;
-  roomConfig: any;
+  roomConfig: IRoomConfig;
   onChangeRoomConfigForm: (name: string, value: any) => void;
   isLoading: boolean;
+  onCloseRoom: () => void;
 }
 
 export const RoomConfig: FC<RoomConfigProps> = ({
@@ -15,6 +16,7 @@ export const RoomConfig: FC<RoomConfigProps> = ({
   roomConfig,
   onChangeRoomConfigForm,
   isLoading,
+  onCloseRoom,
 }) => {
   return (
     <Stack>
@@ -73,8 +75,19 @@ export const RoomConfig: FC<RoomConfigProps> = ({
         onClick={startGame}
         disabled={isLoading}
         isLoading={isLoading}
+        mb={2}
       >
         Start game
+      </Button>
+      <Button
+        fontFamily={'heading'}
+        mt={8}
+        w={'full'}
+        onClick={onCloseRoom}
+        disabled={isLoading}
+        isLoading={isLoading}
+      >
+        Close room
       </Button>
     </Stack>
   );

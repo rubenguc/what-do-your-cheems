@@ -37,6 +37,7 @@ export const WaitingRoom = () => {
     isRoomCreator,
     leaveRoom,
     isLoading,
+    closeRoom,
   } = useWaitingRoom({
     navigate,
     onShowError: showErrorToast,
@@ -105,6 +106,7 @@ export const WaitingRoom = () => {
             roomConfig={roomConfig}
             onChangeRoomConfigForm={onChangeRoomConfig}
             isLoading={isLoading}
+            onCloseRoom={closeRoom}
           />
         )}
         <Divider orientation="horizontal" bgColor="gray.400" />

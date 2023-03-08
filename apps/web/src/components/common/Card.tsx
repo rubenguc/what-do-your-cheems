@@ -1,10 +1,10 @@
 import { FC } from 'react';
 import { Box, Text } from '@chakra-ui/react';
-// import { Card as ICard } from "interfaces/room-interfaces";
-// import {
-//   PhraseCard as IPhraseCard,
-//   MemeCard as IMemeCard,
-// } from '../../interfaces/room-interfaces';
+import {
+  Card as ICard,
+  MemeCard as IMemeCard,
+  PhraseCard as IPhraseCard,
+} from '@wdyc/game-interfaces';
 
 const COMMON_CARD_PROPS = {
   borderRadius: 'xl',
@@ -16,13 +16,13 @@ const COMMON_CARD_PROPS = {
 };
 
 interface PhraseCardProps {
-  card: any;
-  onSelect?: (card: any) => void;
+  card: IPhraseCard;
+  onSelect?: (card: IPhraseCard) => void;
 }
 
 interface MemeCardProps {
-  card: any;
-  onSelect?: (card: any) => void;
+  card: IMemeCard;
+  onSelect?: (card: IMemeCard) => void;
   isInJudgePosition: boolean;
 }
 
@@ -81,8 +81,8 @@ const PhraseCard: FC<PhraseCardProps> = ({ card, onSelect }) => {
 };
 
 interface CardProps {
-  card: any;
-  onSelect?: (card: any) => void;
+  card: ICard;
+  onSelect?: (card: ICard) => void;
   isInJudgePosition?: boolean;
 }
 

@@ -12,6 +12,7 @@ export default defineConfig({
     port: 4200,
     // host: 'localhost',
     // https: true,
+    host: true,
   },
 
   preview: {

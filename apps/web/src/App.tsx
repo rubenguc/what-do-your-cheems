@@ -1,17 +1,16 @@
+import { useEffect } from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import Routes from './Routes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
-import { ConnectionInfo } from './layout/ConnectionInfo';
+import { ConnectionInfo } from './layout';
 import { useSocketContext, useUserContext } from '@wdyc/game';
-import { useEffect } from 'react';
 import { ReconnectResponse, User } from '@wdyc/game-interfaces';
 
 function App() {
   const { isSocketOnline, socket } = useSocketContext();
   const { userIsInit, initUser, login } = useUserContext();
 
-  // Move to separate
   useEffect(() => {
     if (isSocketOnline && !userIsInit) {
       const user = localStorage.getItem('user');

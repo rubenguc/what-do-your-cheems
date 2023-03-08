@@ -1,10 +1,11 @@
+export const CLOSE_ROOM = 'close-room';
 export const CREATE_ROOM = 'create-room';
-export const JOIN_ROOM = 'join-room';
-export const GET_WAITING_ROOM_INFO = 'get-waiting-room-info';
-export const LEAVE_ROOM = 'leave-room';
-export const START_GAME = 'start-game';
+export const CREATOR_FINISH_GAME = 'creator-finish-game';
 export const GET_ROOM_INFO = 'get-room-info';
+export const GET_WAITING_ROOM_INFO = 'get-waiting-room-info';
+export const JOIN_ROOM = 'join-room';
+export const LEAVE_ROOM = 'leave-room';
+export const RECONNECT = 'reconnect';
 export const SET_CARD = 'set-card';
 export const SET_WINNER_CARD = 'set-winner-card';
-export const CREATOR_FINISH_GAME = 'creator-finish-game';
-export const RECONNECT = 'reconnect';
+export const START_GAME = 'start-game';
