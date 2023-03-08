@@ -1,7 +1,7 @@
 What do your cheems
 ===============
 
-An online card game based on what do your meme card game.
+An online card game based on the what do your meme card game.
 
 ## links
 

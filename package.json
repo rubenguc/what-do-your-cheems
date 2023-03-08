@@ -1,5 +1,6 @@
 {
   "name": "what-do-your-cheems",
+  "description": "An online card game based on the what do your meme card game.",
   "version": "1.0.0",
   "license": "MIT",
   "homepage": "https://wdyc-web.vercel.app/",
