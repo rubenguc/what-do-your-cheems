@@ -2,6 +2,7 @@
   "name": "what-do-your-cheems",
   "version": "1.0.0",
   "license": "MIT",
+  "homepage": "https://wdyc-web.vercel.app/",
   "scripts": {
     "start:server": "nx run server:serve",
     "start:web": "nx run web:serve",

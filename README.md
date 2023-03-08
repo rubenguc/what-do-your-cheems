@@ -5,17 +5,10 @@ An online card game based on what do your meme card game.
 
 ## links
 
-<ul>
-  <li>
-    [Web](https://wdyc-web.vercel.app/)
-  </li>
-  <li>
-    [Telegram bot](#https://t.me/wdyc_bot)
-  </li>
-  <li>
-    [App](#)
-  </li>
-</ul>
+- [Web](https://wdyc-web.vercel.app/)
+- [Telegram bot](#https://t.me/wdyc_bot)
+- App (comming soon)
+
 
 
 ## Technologies used:
