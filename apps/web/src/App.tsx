@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import Routes from './Routes';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css';
+import { Toaster } from 'react-hot-toast';
 import { ConnectionInfo } from './layout';
 import { useSocketContext, useUserContext } from '@wdyc/game';
 import { ReconnectResponse, User } from '@wdyc/game-interfaces';
@@ -43,7 +42,7 @@ function App() {
     <ChakraProvider>
       <ConnectionInfo isSocketOnline={isSocketOnline} />
       <Routes />
-      <ToastContainer />
+      <Toaster />
     </ChakraProvider>
   );
 }

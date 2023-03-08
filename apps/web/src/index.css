@@ -10,3 +10,7 @@ body {
 .gavel-icon {
   transform: rotate(-90deg);
 }
+
+.rounded-toast {
+  border-radius: 9999;
+}

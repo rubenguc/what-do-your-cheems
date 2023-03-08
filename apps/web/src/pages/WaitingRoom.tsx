@@ -48,7 +48,7 @@ export const WaitingRoom = () => {
 
   const copyToClipboard = async () => {
     try {
-      navigator.clipboard.writeText(user.roomCode);
+      await navigator.clipboard.writeText(user.roomCode);
       onToggle();
     } catch (error) {
       console.error(error);

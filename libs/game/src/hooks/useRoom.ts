@@ -21,7 +21,7 @@ import { useUserContext } from './useUserContext';
 interface useRoomProps {
   navigate: (route: string) => void;
   onShowError: (message: string) => void;
-  onShowMessage: (message: string, persistent?: boolean) => void;
+  onShowMessage: (message: string, persistent?: boolean, id?: string) => void;
   onClear: () => void;
 }
 
@@ -88,6 +88,9 @@ export const useRoom = ({
               return c;
             })
           );
+        if (socketMethod === 'set-card') {
+          onShowMessage('Waiting for players...', true);
+        }
       }
     );
   };
@@ -137,6 +140,17 @@ export const useRoom = ({
         })) || []
       );
       setWaitingForJudge(waitingForJudge || cardsToSelect.length < 7);
+      if (waitingForJudge || cardsToSelect.length < 7) {
+        if (waitingForJudge && user.username === judge.username) {
+          return onShowMessage('Select the winner card', true);
+        }
+
+        onShowMessage(
+          waitingForJudge ? 'Waiting for judge...' : 'Waiting for players...',
+          true
+        );
+      }
+
       setGame((state: any) => ({
         ...state,
         round,
@@ -178,20 +192,22 @@ export const useRoom = ({
     // socket called when all players (except de judge) set a card
     socket?.on('all-players-ready', () => {
       setWaitingForJudge(true);
-      // onShowError(`now, judge will select the winner card`);
-      // TODO: show toast saying: waiting for judge
+      if (isJudge) {
+        return onShowMessage('Select the winner card', true);
+      }
+      onShowMessage('Waiting for judge...', true);
     });
 
     return () => {
       socket?.off('all-players-ready');
     };
-  }, [isSocketOnline, isJudge, socket]);
+  }, [isSocketOnline, isJudge, socket, onShowMessage]);
 
   useEffect(() => {
     // socket called when judge select the winner card
     // TODO: users should manage with id not username
     socket?.on('winner-card', (resp: string) => {
-      onShowError(`winner ${resp}`);
+      onShowMessage(`winner ${resp}`, false, 'winner');
       setPlayers((state) =>
         state.map((player) =>
           player.username === resp
@@ -204,7 +220,7 @@ export const useRoom = ({
     return () => {
       socket?.off('winner-card');
     };
-  }, [isSocketOnline, isJudge, socket, onShowError]);
+  }, [isSocketOnline, isJudge, socket, onShowError, onShowMessage]);
 
   useEffect(() => {
     // socket called when judge select the winner card
