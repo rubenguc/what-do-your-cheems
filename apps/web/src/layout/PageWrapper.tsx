@@ -1,16 +1,7 @@
-import { useEffect } from 'react';
 import { Container, Icon, useBreakpointValue } from '@chakra-ui/react';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { useUserContext } from '@wdyc/game';
+import { Outlet } from 'react-router-dom';
 
 export const PageWrapper = () => {
-  const { user } = useUserContext();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user.redirectTo) navigate(user.redirectTo);
-  }, [user.redirectTo, navigate]);
-
   return (
     <Container maxW="7xl" h="full">
       <Outlet />

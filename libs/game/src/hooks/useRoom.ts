@@ -97,8 +97,7 @@ export const useRoom = ({
 
   const goToHome = useCallback(() => {
     onClear();
-    navigate('/');
-  }, [navigate, onClear]);
+  }, [onClear]);
 
   const finishGame = () => {
     if (!isRoomCreator) return;

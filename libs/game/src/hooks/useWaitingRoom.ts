@@ -14,12 +14,14 @@ interface useWaitingRoomProps {
   navigate: (route: string) => void;
   onShowError: (message: string) => void;
   onClear: () => void;
+  startRoom: () => void;
 }
 
 export const useWaitingRoom = ({
   navigate,
   onShowError,
   onClear,
+  startRoom,
 }: useWaitingRoomProps) => {
   // hooks
   const { isSocketOnline, socket } = useSocketContext();
@@ -78,19 +80,19 @@ export const useWaitingRoom = ({
   useEffect(() => {
     isSocketOnline &&
       socket?.on('move-to-game', () => {
-        navigate('/room');
+        startRoom();
       });
 
     return () => {
       socket?.off('move-to-game');
     };
-  }, [isSocketOnline, navigate, socket]);
+  }, [isSocketOnline, navigate, socket, startRoom]);
 
   useEffect(() => {
     isSocketOnline &&
       socket?.on('close-room', () => {
         onClear();
-        navigate('/');
+        // navigate('/');
       });
 
     return () => {
@@ -131,7 +133,7 @@ export const useWaitingRoom = ({
           return onShowError(res.message);
         }
         onClear();
-        navigate('/');
+        // navigate('/');
       });
     }
   };
@@ -145,7 +147,7 @@ export const useWaitingRoom = ({
           return onShowError(res.message);
         }
         onClear();
-        navigate('/');
+        // navigate('/');
       });
     }
   };

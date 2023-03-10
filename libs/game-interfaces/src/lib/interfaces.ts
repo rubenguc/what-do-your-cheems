@@ -160,13 +160,14 @@ export type ReconnectResponse = SocketResponse<{
 export interface User {
   username: string;
   roomCode: string;
-  redirectTo?: string;
+  roomIsStarted: boolean;
+  isInit: boolean;
 }
 
-interface LoginProps {
+export interface LoginProps {
   roomCode: string;
   username: string;
-  redirectTo?: string;
+  roomIsStarted: boolean;
 }
 
 export type LoginState = (props: LoginProps) => void;

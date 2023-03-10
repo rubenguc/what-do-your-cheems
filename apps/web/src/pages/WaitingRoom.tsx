@@ -1,8 +1,8 @@
 import {
+  Box,
   Button,
   Divider,
   Heading,
-  HStack,
   IconButton,
   Popover,
   PopoverBody,
@@ -22,7 +22,7 @@ export const WaitingRoom = () => {
   const navigate = useNavigate();
   const { showErrorToast } = useToast();
 
-  const { user, clear } = useUserContext();
+  const { user, clear, startRoom } = useUserContext();
 
   const onClear = () => {
     localStorage.removeItem('user');
@@ -42,6 +42,7 @@ export const WaitingRoom = () => {
     navigate,
     onShowError: showErrorToast,
     onClear,
+    startRoom,
   });
 
   const { isOpen, onToggle, onClose } = useDisclosure();
@@ -75,7 +76,7 @@ export const WaitingRoom = () => {
       >
         Waiting Room
       </Heading>
-      <HStack>
+      <Box display="flex" gap={2} alignItems="center">
         <Text color={'gray.800'} fontSize="3xl" fontWeight="bold">
           code: {user.roomCode}
         </Text>
@@ -98,7 +99,7 @@ export const WaitingRoom = () => {
             </PopoverContent>
           </Popover>
         )}
-      </HStack>
+      </Box>
       <Stack direction={'column'} gap={4}>
         {isRoomCreator && (
           <RoomConfig

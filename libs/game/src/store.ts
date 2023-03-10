@@ -5,18 +5,22 @@ export interface GlobalState {
   user: User;
   login: LoginState;
   clear: () => void;
+  startRoom: () => void;
 }
 
 const useStore = create<GlobalState>((set) => ({
   user: {
     username: '',
     roomCode: '',
+    roomIsStarted: false,
+    isInit: false,
   },
-  login: ({ roomCode, username, redirectTo }) => {
-    const user = {
+  login: ({ roomCode, username, roomIsStarted }) => {
+    const user: User = {
       roomCode,
       username,
-      redirectTo,
+      roomIsStarted,
+      isInit: true,
     };
     set((state) => {
       return {
@@ -25,12 +29,23 @@ const useStore = create<GlobalState>((set) => ({
       };
     });
   },
+  startRoom: () => {
+    set((state) => ({
+      ...state,
+      user: {
+        ...state.user,
+        roomIsStarted: true,
+      },
+    }));
+  },
   clear: () => {
     set((state) => ({
       ...state,
       user: {
         username: '',
         roomCode: '',
+        roomIsStarted: false,
+        isInit: true,
       },
     }));
   },

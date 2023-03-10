@@ -1,22 +1,29 @@
-import { createContext, FC, PropsWithChildren, useState } from 'react';
+import { LoginProps } from '@wdyc/game-interfaces';
+import { createContext, FC, PropsWithChildren } from 'react';
 import useStore, { GlobalState } from '../store';
 
 type IUserContext = GlobalState & {
-  userIsInit: boolean;
   initUser: () => void;
 };
 
 export const UserContext = createContext({} as IUserContext);
 
 export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [userIsInit, setuserIsInit] = useState(false);
-
   const user = useStore((state) => state.user);
-  const login = useStore((state) => state.login);
+  const _login = useStore((state) => state.login);
   const clear = useStore((state) => state.clear);
+  const startRoom = useStore((state) => state.startRoom);
 
   const initUser = () => {
-    setuserIsInit(true);
+    _login({
+      roomCode: '',
+      username: '',
+      roomIsStarted: false,
+    });
+  };
+
+  const login = (props: LoginProps) => {
+    _login(props);
   };
 
   return (
@@ -25,8 +32,8 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         user,
         login,
         clear,
-        userIsInit,
         initUser,
+        startRoom,
       }}
     >
       {children}

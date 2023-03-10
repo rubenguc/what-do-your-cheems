@@ -1,11 +1,20 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import {
+  RouterProvider,
+  createBrowserRouter,
+  Navigate,
+} from 'react-router-dom';
 import { Home, WaitingRoom, Room } from './pages';
 import { PageWrapper } from './layout';
+import { UserGuard } from './layout/UserGuard';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <PageWrapper />,
+    element: (
+      <UserGuard>
+        <PageWrapper />
+      </UserGuard>
+    ),
     children: [
       {
         index: true,
@@ -19,6 +28,7 @@ const router = createBrowserRouter([
         path: '/room',
         element: <Room />,
       },
+      { path: '*', element: <Navigate to="/" /> },
     ],
   },
 ]);
