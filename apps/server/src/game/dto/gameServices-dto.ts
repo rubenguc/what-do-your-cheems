@@ -1,4 +1,4 @@
-import { Room } from '../types';
+import { Room } from '@wdyc/game-interfaces';
 
 export interface CreateRoomServiceProps {
   username: string;

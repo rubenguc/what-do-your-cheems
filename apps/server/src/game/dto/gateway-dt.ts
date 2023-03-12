@@ -1,4 +1,5 @@
-import { Card, Player } from '../types';
+import { Card, Player } from '@wdyc/game-interfaces';
+
 export interface SocketResponse<T> {
   message: string;
   data?: T;
