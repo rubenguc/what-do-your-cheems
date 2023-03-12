@@ -2,7 +2,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
-import { VitePWA } from 'vite-plugin-pwa';
+// import { VitePWA } from 'vite-plugin-pwa';
 // import mkcert from 'vite-plugin-mkcert';
 
 export default defineConfig({
@@ -23,31 +23,31 @@ export default defineConfig({
 
   plugins: [
     react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      devOptions: {
-        enabled: true,
-      },
-      includeAssets: ['favicon.ico'],
-      manifest: {
-        name: 'What do your cheems',
-        short_name: 'wdyc',
-        description: 'What do your cheems',
-        theme_color: '#ffffff',
-        icons: [
-          {
-            src: 'icon-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: 'icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-          },
-        ],
-      },
-    }),
+    // VitePWA({
+    //   registerType: 'autoUpdate',
+    //   devOptions: {
+    //     enabled: false,
+    //   },
+    //   includeAssets: ['favicon.ico'],
+    //   manifest: {
+    //     name: 'What do your cheems',
+    //     short_name: 'wdyc',
+    //     description: 'What do your cheems',
+    //     theme_color: '#ffffff',
+    //     icons: [
+    //       {
+    //         src: 'icon-192x192.png',
+    //         sizes: '192x192',
+    //         type: 'image/png',
+    //       },
+    //       {
+    //         src: 'icon-512x512.png',
+    //         sizes: '512x512',
+    //         type: 'image/png',
+    //       },
+    //     ],
+    //   },
+    // }),
     // mkcert({
     //   force: true,
     //   savePath: './',
