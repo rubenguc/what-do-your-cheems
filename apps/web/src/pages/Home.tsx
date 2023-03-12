@@ -17,6 +17,9 @@ import { BsTelegram, BsGithub } from 'react-icons/bs';
 import pkg from '../../../../package.json';
 import { useTranslation } from 'react-i18next';
 
+const GITHUB_LINK = import.meta.env.VITE_GITHUB_LINK;
+const TELEGRAM_LINK = import.meta.env.VITE_TELEGRAM_LINK;
+
 export const Home = () => {
   const { t } = useTranslation('home');
 
@@ -85,7 +88,7 @@ export const Home = () => {
             </TabPanels>
           </Tabs>
           <VStack gap={1} alignItems="start">
-            <a href="https://t.me/wdyc_bot" target="_blank" rel="noreferrer">
+            <a href={TELEGRAM_LINK} target="_blank" rel="noreferrer">
               <Button
                 leftIcon={<BsTelegram />}
                 size="sm"
@@ -96,11 +99,7 @@ export const Home = () => {
                 {t('upload_memes_phrases')}
               </Button>
             </a>
-            <a
-              href="https://github.com/rubenguc/wdyc-web"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={GITHUB_LINK} target="_blank" rel="noreferrer">
               <Button
                 leftIcon={<BsGithub />}
                 size="sm"
