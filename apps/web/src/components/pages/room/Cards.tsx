@@ -14,13 +14,15 @@ import {
 } from '@chakra-ui/react';
 // import { Card as ICard } from "interfaces/room-interfaces";
 import { Card } from '../../common';
+import { Card as ICard, Player } from '@wdyc/game-interfaces';
+import { useTranslation } from 'react-i18next';
 
 interface CardProps {
-  cards: any[];
-  setCard: (card: any) => void;
+  cards: ICard[];
+  setCard: (card: ICard) => void;
   waitingForJudge: boolean;
   isJudge: boolean;
-  playerCards: any[];
+  playerCards: Player['cards'];
 }
 
 export const Cards: FC<CardProps> = ({
@@ -30,11 +32,12 @@ export const Cards: FC<CardProps> = ({
   playerCards,
   isJudge,
 }) => {
-  const [selectCard, setselectCard] = useState<any | null>(null);
+  const { t } = useTranslation('room');
+  const [selectCard, setselectCard] = useState<ICard | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
 
-  const onSelectCard = (card: any) => {
+  const onSelectCard = (card: ICard) => {
     if (cards.length < 7) return;
     if (!isJudge && waitingForJudge) return;
     setselectCard(card);
@@ -47,7 +50,7 @@ export const Cards: FC<CardProps> = ({
   };
 
   const confirmCard = () => {
-    setCard(selectCard as any);
+    setCard(selectCard as ICard);
     closeModal();
   };
 
@@ -55,7 +58,7 @@ export const Cards: FC<CardProps> = ({
     if (isJudge) return waitingForJudge ? playerCards : [];
 
     return cards;
-  }, [cards, playerCards, isJudge]);
+  }, [isJudge, waitingForJudge, playerCards, cards]);
 
   return (
     <>
@@ -99,7 +102,7 @@ export const Cards: FC<CardProps> = ({
         <AlertDialogOverlay />
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            You selected:
+            {t('selected_card')}:
           </AlertDialogHeader>
           <AlertDialogBody>
             {selectCard?.type === 'PHRASE' && <Text>{selectCard.content}</Text>}
@@ -116,10 +119,10 @@ export const Cards: FC<CardProps> = ({
           </AlertDialogBody>
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={closeModal}>
-              No
+              {t('cancel')}
             </Button>
             <Button colorScheme="red" ml={3} onClick={confirmCard}>
-              Send
+              {t('send')}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

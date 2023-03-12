@@ -1,19 +1,22 @@
 import { Box, Button, Heading, Input, Stack } from '@chakra-ui/react';
-import { useHome, useUserContext } from '@wdyc/game';
-import { CreateRoomResponse } from '@wdyc/game-interfaces';
+import { useHome, useUserContext } from '@wdyc/game/hooks';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../../../hooks/common/useToast';
+import { useTranslation } from 'react-i18next';
+import { LoginProps } from '../../../../../../dist/libs/game-interfaces/src/lib/interfaces';
 
 export const CreateRoom = () => {
+  const { t } = useTranslation('home');
+
   const navigate = useNavigate();
   const { showErrorToast } = useToast();
 
   const { login } = useUserContext();
 
-  const onLogin = (data: CreateRoomResponse['data']) => {
+  const onLogin = (data: LoginProps) => {
     if (!data) return;
     localStorage.setItem('user', JSON.stringify(data));
-    login(data);
+    login(data as LoginProps);
   };
 
   const { loginForm, onChangeForm, createRoom } = useHome({
@@ -29,12 +32,12 @@ export const CreateRoom = () => {
         lineHeight={1.1}
         fontSize={{ base: '2xl', sm: '3xl', md: '4xl' }}
       >
-        Create Room
+        {t('create_room')}
       </Heading>
       <Box mt={10}>
         <Stack spacing={4}>
           <Input
-            placeholder="username"
+            placeholder={t('username_placeholder') as string}
             bg={'gray.100'}
             border={0}
             _placeholder={{
@@ -60,7 +63,7 @@ export const CreateRoom = () => {
           }}
           onClick={createRoom}
         >
-          Create
+          {t('create_button_text')}
         </Button>
       </Box>
     </>

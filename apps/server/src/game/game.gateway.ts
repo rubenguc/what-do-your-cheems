@@ -46,6 +46,7 @@ import { InjectSentry, SentryService } from '@ntegral/nestjs-sentry';
 import {
   CREATE_ROOM,
   CREATOR_FINISH_GAME,
+  CLOSE_ROOM,
   GET_ROOM_INFO,
   GET_WAITING_ROOM_INFO,
   JOIN_ROOM,
@@ -56,7 +57,7 @@ import {
   START_GAME,
 } from './paths';
 import { customAlphabet } from 'nanoid';
-import { CLOSE_ROOM } from './paths';
+import { messages } from '@wdyc/game/messages';
 
 @WebSocketGateway({ cors: true })
 export class GameGateway
@@ -123,7 +124,7 @@ export class GameGateway
         return scope;
       });
       return handleSocketResponse({
-        message: 'server error',
+        message: messages.error.server_error,
         error: true,
       });
     }
@@ -142,7 +143,7 @@ export class GameGateway
 
       if (!room) {
         return handleSocketResponse({
-          message: "Room doesn't exist",
+          message: messages.error.room_does_not_exist,
           error: true,
         });
       }
@@ -151,7 +152,7 @@ export class GameGateway
 
       if (decodedRoom.isStarted) {
         return handleSocketResponse({
-          message: 'Room already started',
+          message: messages.error.room_already_started,
           error: true,
         });
       }
@@ -162,7 +163,7 @@ export class GameGateway
 
       if (alreadyUsername) {
         return handleSocketResponse({
-          message: 'Username already taken',
+          message: messages.error.username_already_taken,
           error: true,
         });
       }
@@ -197,7 +198,7 @@ export class GameGateway
         return scope;
       });
       return handleSocketResponse({
-        message: 'server error',
+        message: messages.error.server_error,
         error: true,
       });
     }
@@ -216,7 +217,7 @@ export class GameGateway
 
       if (!room) {
         return handleSocketResponse({
-          message: "Room doesn't exist",
+          message: messages.error.room_does_not_exist,
           error: true,
         });
       }
@@ -229,7 +230,7 @@ export class GameGateway
 
       if (!isUserInGame) {
         return handleSocketResponse({
-          message: 'Invalid room',
+          message: messages.error.invalid_room,
           error: true,
         });
       }
@@ -259,7 +260,7 @@ export class GameGateway
         return scope;
       });
       return handleSocketResponse({
-        message: 'server error',
+        message: messages.error.server_error,
         error: true,
       });
     }
@@ -278,7 +279,7 @@ export class GameGateway
 
       if (!room) {
         return handleSocketResponse({
-          message: 'room not found',
+          message: messages.error.room_not_found,
           error: true,
         });
       }
@@ -291,15 +292,12 @@ export class GameGateway
 
       if (playerIndex === -1) {
         return handleSocketResponse({
-          message: 'player not found',
+          message: messages.error.player_not_found,
           error: true,
         });
       }
 
-      const removedPlayer = decodedRoom.players.splice(
-        playerIndex,
-        playerIndex
-      );
+      const removedPlayer = decodedRoom.players.splice(playerIndex, 1);
 
       await this.redisService.updateRoom({
         roomCode,
@@ -325,7 +323,7 @@ export class GameGateway
         return scope;
       });
       return handleSocketResponse({
-        message: 'server error',
+        message: messages.error.server_error,
         error: true,
       });
     }
@@ -344,7 +342,7 @@ export class GameGateway
 
       if (!room) {
         return handleSocketResponse({
-          message: 'room not found',
+          message: messages.error.room_not_found,
           error: true,
         });
       }
@@ -361,14 +359,14 @@ export class GameGateway
 
       if (players[playerInfoIndex]?.username !== decodedRoom.roomCreator) {
         return handleSocketResponse({
-          message: `you can't start the game`,
+          message: messages.error.player_can_not_start_the_game,
           error: true,
         });
       }
 
       if (decodedRoom.players.length < 3) {
         return handleSocketResponse({
-          message: `At least three players are required to start`,
+          message: messages.error.at_least_three_players_to_start_game,
           error: true,
         });
       }
@@ -469,7 +467,7 @@ export class GameGateway
         return scope;
       });
       return handleSocketResponse({
-        message: 'server error',
+        message: messages.error.server_error,
         error: true,
       });
     }
@@ -488,7 +486,7 @@ export class GameGateway
 
       if (!room) {
         return handleSocketResponse({
-          message: 'room not found',
+          message: messages.error.room_not_found,
           error: true,
         });
       }
@@ -501,7 +499,7 @@ export class GameGateway
 
       if (playerIndex === -1) {
         return handleSocketResponse({
-          message: 'Player not found',
+          message: messages.error.player_not_found,
           error: true,
         });
       }
@@ -552,7 +550,7 @@ export class GameGateway
         return scope;
       });
       return handleSocketResponse({
-        message: 'server error',
+        message: messages.error.server_error,
         error: true,
       });
     }
@@ -570,7 +568,7 @@ export class GameGateway
 
       if (!room) {
         return handleSocketResponse({
-          message: 'room not found',
+          message: messages.error.room_not_found,
           error: true,
         });
       }
@@ -581,7 +579,7 @@ export class GameGateway
 
       if (userIsJudge) {
         return handleSocketResponse({
-          message: 'you are the judge',
+          message: messages.error.invalid_card,
           error: true,
         });
       }
@@ -592,7 +590,7 @@ export class GameGateway
 
       if (userAlreadyPlay) {
         return {
-          message: 'you already play',
+          message: messages.error.you_already_played,
           error: true,
         };
       }
@@ -666,7 +664,7 @@ export class GameGateway
         return scope;
       });
       return handleSocketResponse({
-        message: 'server error',
+        message: messages.error.server_error,
         error: true,
       });
     }
@@ -684,7 +682,7 @@ export class GameGateway
 
       if (!room) {
         return handleSocketResponse({
-          message: 'room not found',
+          message: messages.error.room_not_found,
           error: true,
         });
       }
@@ -695,7 +693,7 @@ export class GameGateway
 
       if (!userIsJudge) {
         return handleSocketResponse({
-          message: 'you are not the judge',
+          message: messages.error.invalid_card,
           error: true,
         });
       }
@@ -723,7 +721,7 @@ export class GameGateway
         );
         decodedRoom.winner = decodedRoom.players[index].username;
 
-        client.broadcast.to(roomCode).emit('end-game', winnerPlayer);
+        // client.broadcast.to(roomCode).emit('end-game', winnerPlayer);
         client.emit('end-game', winnerPlayer);
 
         this.redisService.deleteRoom(roomCode);
@@ -763,9 +761,16 @@ export class GameGateway
             );
 
             if (
-              !player.cards.some(
-                (c) => c === decodedRoom.playerCards[randomCardIndex]
-              )
+              !player.cards.some((c) => {
+                if (c.type === 'MEME') {
+                  c.url ===
+                    (decodedRoom.playerCards[randomCardIndex] as MemeCard).url;
+                } else {
+                  c.content ===
+                    (decodedRoom.playerCards[randomCardIndex] as PhraseCard)
+                      .content;
+                }
+              })
             ) {
               const card = decodedRoom.playerCards.splice(
                 randomCardIndex,
@@ -816,7 +821,7 @@ export class GameGateway
         return scope;
       });
       return handleSocketResponse({
-        message: 'server error',
+        message: messages.error.server_error,
         error: true,
       });
     }
@@ -834,7 +839,7 @@ export class GameGateway
 
       if (!room) {
         return handleSocketResponse({
-          message: 'room not found',
+          message: messages.error.room_not_found,
           error: true,
         });
       }
@@ -845,7 +850,7 @@ export class GameGateway
 
       if (!userIsCreator) {
         return handleSocketResponse({
-          message: 'you are not the room creator',
+          message: messages.error.you_are_not_room_creator,
           error: true,
         });
       }
@@ -869,7 +874,7 @@ export class GameGateway
         return scope;
       });
       return handleSocketResponse({
-        message: 'server error',
+        message: messages.error.server_error,
         error: true,
       });
     }
@@ -887,7 +892,7 @@ export class GameGateway
 
       if (!room) {
         return handleSocketResponse({
-          message: 'room not found',
+          message: messages.error.room_not_found,
           error: true,
         });
       }
@@ -898,7 +903,7 @@ export class GameGateway
 
       if (!userIsCreator) {
         return handleSocketResponse({
-          message: 'you are not the room creator',
+          message: messages.error.you_are_not_room_creator,
           error: true,
         });
       }
@@ -922,7 +927,7 @@ export class GameGateway
         return scope;
       });
       return handleSocketResponse({
-        message: 'server error',
+        message: messages.error.server_error,
         error: true,
       });
     }
@@ -992,7 +997,7 @@ export class GameGateway
         return scope;
       });
       return handleSocketResponse({
-        message: 'server error',
+        message: messages.error.server_error,
         error: true,
       });
     }

@@ -15,8 +15,11 @@ import { Image } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BsTelegram, BsGithub } from 'react-icons/bs';
 import pkg from '../../../../package.json';
+import { useTranslation } from 'react-i18next';
 
 export const Home = () => {
+  const { t } = useTranslation('home');
+
   return (
     <>
       <HStack justifyContent="center" pt="10" minH="166px">
@@ -69,8 +72,8 @@ export const Home = () => {
         >
           <Tabs isFitted variant="soft-rounded">
             <TabList mb="1em">
-              <Tab>Create</Tab>
-              <Tab>Join</Tab>
+              <Tab>{t('create_tab')}</Tab>
+              <Tab>{t('join_tab')}</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
@@ -90,7 +93,7 @@ export const Home = () => {
                 textTransform="none"
                 variant="ghost"
               >
-                Upload your own memes and phrases
+                {t('upload_memes_phrases')}
               </Button>
             </a>
             <a
@@ -105,7 +108,7 @@ export const Home = () => {
                 textTransform="none"
                 variant="ghost"
               >
-                Give me a star
+                {t('give_me_a_star')}
               </Button>
             </a>
           </VStack>

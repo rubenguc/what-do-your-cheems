@@ -112,3 +112,4 @@ yarn-error.log
 
 
 apps/app-e2e/artifacts
+**/dev-dist

@@ -1,39 +1,26 @@
-import { FC } from "react";
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalOverlay,
-  Text,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { FC } from 'react';
+import { Button, useDisclosure } from '@chakra-ui/react';
+import { ConfirmModal } from '../../common';
+import { useTranslation } from 'react-i18next';
 
 interface FinishGameProps {
   finishGame: () => void;
 }
 
 export const FinishGame: FC<FinishGameProps> = ({ finishGame }) => {
+  const { t } = useTranslation('room');
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
-      <Button onClick={onOpen}>Finish game</Button>
+      <Button onClick={onOpen}>{t('finish_game')}</Button>
 
-      <Modal onClose={onClose} isOpen={isOpen} isCentered>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text>Confirm</Text>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={finishGame}>Finish</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <ConfirmModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onConfirm={finishGame}
+        message={t('finish_game_confirmation')}
+      />
     </>
   );
 };

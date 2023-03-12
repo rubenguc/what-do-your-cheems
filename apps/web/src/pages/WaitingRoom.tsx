@@ -12,16 +12,19 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { RoomConfig, WaitingPlayers } from '../components/pages/waitingRoom';
+import { useTranslation } from 'react-i18next';
 import { BiCopy } from 'react-icons/bi';
-import { useUserContext, useWaitingRoom } from '@wdyc/game';
 import { useNavigate } from 'react-router-dom';
+import { useUserContext, useWaitingRoom } from '@wdyc/game/hooks';
+import { RoomConfig, WaitingPlayers } from '../components/pages/waitingRoom';
 import { useToast } from '../hooks/common/useToast';
+import { ConfirmModal } from '../components/common';
 
 export const WaitingRoom = () => {
+  const { t } = useTranslation('waiting_room');
   const navigate = useNavigate();
-  const { showErrorToast } = useToast();
 
+  const { showErrorToast } = useToast();
   const { user, clear, startRoom } = useUserContext();
 
   const onClear = () => {
@@ -46,6 +49,11 @@ export const WaitingRoom = () => {
   });
 
   const { isOpen, onToggle, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenModal,
+    onToggle: onTogleModal,
+    onClose: onCloseModal,
+  } = useDisclosure();
 
   const copyToClipboard = async () => {
     try {
@@ -74,11 +82,11 @@ export const WaitingRoom = () => {
         textAlign="center"
         fontSize={{ base: '2xl', sm: '3xl', md: '4xl' }}
       >
-        Waiting Room
+        {t('title')}
       </Heading>
       <Box display="flex" gap={2} alignItems="center">
         <Text color={'gray.800'} fontSize="3xl" fontWeight="bold">
-          code: {user.roomCode}
+          {t('code')}: {user.roomCode}
         </Text>
         {user.roomCode && (
           <Popover
@@ -95,7 +103,7 @@ export const WaitingRoom = () => {
               />
             </PopoverTrigger>
             <PopoverContent bgColor="#EDF2F7" w="fit-content">
-              <PopoverBody>Copied</PopoverBody>
+              <PopoverBody>{t('code_copied')}</PopoverBody>
             </PopoverContent>
           </Popover>
         )}
@@ -107,20 +115,29 @@ export const WaitingRoom = () => {
             roomConfig={roomConfig}
             onChangeRoomConfigForm={onChangeRoomConfig}
             isLoading={isLoading}
-            onCloseRoom={closeRoom}
+            onCloseRoom={onTogleModal}
           />
         )}
         <Divider orientation="horizontal" bgColor="gray.400" />
         <WaitingPlayers players={players} />
         {!isRoomCreator && (
           <Button
-            onClick={leaveRoom}
+            onClick={onTogleModal}
             disabled={isLoading}
             isLoading={isLoading}
           >
-            Leave room
+            {t('leave_room')}
           </Button>
         )}
+        <ConfirmModal
+          isOpen={isOpenModal}
+          onClose={onCloseModal}
+          onConfirm={!isRoomCreator ? leaveRoom : closeRoom}
+          isLoading={isLoading}
+          message={
+            !isRoomCreator ? t('leave_room_confirm') : t('close_room_confirm')
+          }
+        />
       </Stack>
     </Stack>
   );

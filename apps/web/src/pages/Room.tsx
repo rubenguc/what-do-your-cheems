@@ -11,13 +11,17 @@ import { FinishGame, JudgeCard, Players } from '../components/pages/room';
 import { Cards } from '../components/pages/room/Cards';
 import JSConfetti from 'js-confetti';
 import { useEffect } from 'react';
-import { useRoom, useUserContext } from '@wdyc/game';
+import { useUserContext, useRoom } from '@wdyc/game/hooks';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../hooks/common/useToast';
+import { useTranslation } from 'react-i18next';
 
 export const Room = () => {
+  const { t } = useTranslation('room');
+
   const jsConfetti = new JSConfetti();
   const navigate = useNavigate();
+
   const { showErrorToast, showSuccessToast } = useToast();
 
   const { user, clear } = useUserContext();
@@ -72,10 +76,12 @@ export const Room = () => {
       >
         <Card bgColor="white">
           <CardBody>
-            <Text color="black">Winner: {game.winner}</Text>
+            <Text color="black">
+              {t('winner')}: {game.winner}
+            </Text>
             <Flex justifyContent="center" mt={5}>
               <Button onClick={goToHome} mx="auto">
-                Exit
+                {t('exit')}
               </Button>
             </Flex>
           </CardBody>
@@ -87,10 +93,12 @@ export const Room = () => {
   return (
     <Box py={2} display="flex" flexDirection="column" h="full">
       <HStack justifyContent="space-between">
-        <Text color="white">username: {user.username}</Text>
+        <Text color="white">
+          {t('username')}: {user.username}
+        </Text>
         <HStack gap={2}>
           <Text color="white">
-            roud: {game.round}/{game.config?.totalRounds}
+            {t('round')}: {game.round}/{game.config?.totalRounds}
           </Text>
           {isRoomCreator && <FinishGame finishGame={finishGame} />}
         </HStack>

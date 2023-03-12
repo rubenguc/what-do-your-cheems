@@ -7,11 +7,12 @@ import {
 } from '@wdyc/game-interfaces';
 
 const COMMON_CARD_PROPS = {
-  borderRadius: 'xl',
-  bgColor: 'white',
+  borderRadius: '2xl',
+  bgColor: 'black',
   p: '2',
   shadow: 'base',
   borderWidth: '2px',
+  borderColor: 'black',
   minW: '40',
 };
 
@@ -29,7 +30,7 @@ interface MemeCardProps {
 const MemeCard: FC<MemeCardProps> = ({ card, onSelect, isInJudgePosition }) => {
   const isHorizontal = card.imageOrientation === 'H';
 
-  const rotate = isHorizontal && !isInJudgePosition;
+  const rotate = isHorizontal && isInJudgePosition;
 
   return (
     <Box
@@ -37,10 +38,10 @@ const MemeCard: FC<MemeCardProps> = ({ card, onSelect, isInJudgePosition }) => {
       w="100%"
       h="100%"
       mx="auto"
-      minW={isHorizontal ? '320px' : '200px'}
-      maxW={isHorizontal ? '320px' : '200px'}
-      minH={isHorizontal ? '200px' : '300px'}
-      maxH={isHorizontal ? '200px' : '300px'}
+      minW={rotate ? '300px' : '200px'}
+      maxW={rotate ? '300px' : '200px'}
+      minH={rotate ? '200px' : '300px'}
+      maxH={rotate ? '200px' : '300px'}
       borderColor="#444"
       position="relative"
       overflow="hidden"
@@ -54,12 +55,14 @@ const MemeCard: FC<MemeCardProps> = ({ card, onSelect, isInJudgePosition }) => {
         bgSize={'cover'}
         bgRepeat={'no-repeat'}
         bgPosition={'center'}
-        bgColor="red.50"
-        minW={isHorizontal ? '320px' : '200px'}
-        maxW={isHorizontal ? '320px' : '200px'}
+        bgColor="transparent"
+        minW={isHorizontal ? '300px' : '200px'}
+        maxW={isHorizontal ? '300px' : '200px'}
         minH={isHorizontal ? '200px' : '300px'}
         maxH={isHorizontal ? '200px' : '300px'}
-        transform={rotate ? 'rotate(-90deg) translate(-18%, -31%)' : ''}
+        transform={
+          !rotate && isHorizontal ? 'rotate(-90deg) translate(-16%, -26%)' : ''
+        }
       />
     </Box>
   );
@@ -73,9 +76,12 @@ const PhraseCard: FC<PhraseCardProps> = ({ card, onSelect }) => {
       maxW="40"
       borderColor="black"
       h="56"
+      bgColor="blue.700"
       onClick={() => onSelect?.(card)}
     >
-      <Text color="black">{card.content}</Text>
+      <Text color="white" fontWeight="bold">
+        {card.content}
+      </Text>
     </Box>
   );
 };

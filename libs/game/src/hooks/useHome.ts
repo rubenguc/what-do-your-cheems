@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSocketContext } from './useSocketContext';
 import { CreateRoomResponse, JoinRoomResponse } from '@wdyc/game-interfaces';
 import { useUserContext } from './useUserContext';
+import { messages } from '../messages';
 
 interface LoginForm {
   username: string;
@@ -35,8 +36,8 @@ export const useHome = ({ navigate, onShowError, onLogin }: useHomeProps) => {
   const createRoom = () => {
     const username = loginForm.username.trim();
 
-    if (!username) return onShowError('Invalid username');
-    if (!isSocketOnline) return onShowError('Connection error');
+    if (!username) return onShowError(messages.error.invalid_username);
+    if (!isSocketOnline) return onShowError(messages.error.connection_error);
 
     const data = {
       username,
@@ -52,9 +53,9 @@ export const useHome = ({ navigate, onShowError, onLogin }: useHomeProps) => {
   const joinRoom = () => {
     const username = loginForm.username.trim();
     const roomCode = loginForm.roomCode?.trim();
-    if (!username) return onShowError('Invalid username');
-    if (!roomCode) return onShowError('Invalid roomCode');
-    if (!isSocketOnline) return onShowError('Connection error');
+    if (!username) return onShowError(messages.error.invalid_username);
+    if (!roomCode) return onShowError(messages.error.invalid_room_code);
+    if (!isSocketOnline) return onShowError(messages.error.connection_error);
     const data = {
       username,
       roomCode,

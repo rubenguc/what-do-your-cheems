@@ -1,15 +1,18 @@
 import { Heading, HStack, Icon, Text, VStack } from '@chakra-ui/react';
 import { FaUserAstronaut } from 'react-icons/fa';
-// import { Player } from "../../../interfaces/room-interfaces";
+import { useTranslation } from 'react-i18next';
+import { WaitRoomPlayer } from '@wdyc/game-interfaces';
 
 interface WaitingPlayersProps {
-  players: any[];
+  players: WaitRoomPlayer[];
 }
 
 export const WaitingPlayers = ({ players }: WaitingPlayersProps) => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <Heading color="gray.800">Players</Heading>
+      <Heading color="gray.800">{t('players')}</Heading>
       <VStack alignItems="start" gap={4}>
         {players.map((p, index) => (
           <HStack key={index.toString()}>

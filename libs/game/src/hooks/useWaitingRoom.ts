@@ -92,7 +92,6 @@ export const useWaitingRoom = ({
     isSocketOnline &&
       socket?.on('close-room', () => {
         onClear();
-        // navigate('/');
       });
 
     return () => {
@@ -133,7 +132,6 @@ export const useWaitingRoom = ({
           return onShowError(res.message);
         }
         onClear();
-        // navigate('/');
       });
     }
   };
@@ -147,7 +145,6 @@ export const useWaitingRoom = ({
           return onShowError(res.message);
         }
         onClear();
-        // navigate('/');
       });
     }
   };

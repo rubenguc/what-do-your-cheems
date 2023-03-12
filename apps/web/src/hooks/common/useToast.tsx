@@ -1,7 +1,10 @@
 import { Spinner } from '@chakra-ui/react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 export const useToast = () => {
+  const { t: tServer } = useTranslation('errors');
+
   const showSuccessToast = (
     message: string,
     persistent?: boolean,
@@ -16,7 +19,7 @@ export const useToast = () => {
   };
 
   const showErrorToast = (message: string) => {
-    toast.error(message, {
+    toast.error(tServer(message), {
       id: 'error-toast',
       position: 'top-center',
       duration: 3300,

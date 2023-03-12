@@ -1,10 +1,13 @@
 import { Box, Button, Heading, Input, Stack } from '@chakra-ui/react';
-import { useHome, useUserContext } from '@wdyc/game';
+import { useHome, useUserContext } from '@wdyc/game/hooks';
 import { CreateRoomResponse } from '@wdyc/game-interfaces';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../../../hooks/common/useToast';
+import { useTranslation } from 'react-i18next';
 
 export const JoinRoom = () => {
+  const { t } = useTranslation('home');
+
   const navigate = useNavigate();
   const { showErrorToast } = useToast();
 
@@ -29,12 +32,12 @@ export const JoinRoom = () => {
         lineHeight={1.1}
         fontSize={{ base: '2xl', sm: '3xl', md: '4xl' }}
       >
-        Join Room
+        {t('join_room')}
       </Heading>
       <Box mt={10}>
         <Stack spacing={4}>
           <Input
-            placeholder="username"
+            placeholder={t('username_placeholder') as string}
             bg={'gray.100'}
             border={0}
             _placeholder={{
@@ -44,7 +47,7 @@ export const JoinRoom = () => {
             value={loginForm.username}
           />
           <Input
-            placeholder="room code"
+            placeholder={t('room_code_placeholder') as string}
             bg={'gray.100'}
             border={0}
             _placeholder={{
@@ -70,7 +73,7 @@ export const JoinRoom = () => {
           }}
           onClick={joinRoom}
         >
-          Join
+          {t('join_room')}
         </Button>
       </Box>
     </>

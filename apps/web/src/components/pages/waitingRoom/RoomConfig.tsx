@@ -1,12 +1,13 @@
 import { Box, Button, Heading, Select, Stack, Text } from '@chakra-ui/react';
-import { GAME_MODES, ROUNDS_TO_SELECT } from '@wdyc/game';
+import { GAME_MODES, ROUNDS_TO_SELECT } from '@wdyc/game/utils';
 import { RoomConfig as IRoomConfig } from '@wdyc/game-interfaces';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface RoomConfigProps {
   startGame: () => void;
   roomConfig: IRoomConfig;
-  onChangeRoomConfigForm: (name: string, value: any) => void;
+  onChangeRoomConfigForm: (name: string, value: string) => void;
   isLoading: boolean;
   onCloseRoom: () => void;
 }
@@ -18,12 +19,16 @@ export const RoomConfig: FC<RoomConfigProps> = ({
   isLoading,
   onCloseRoom,
 }) => {
+  const { t } = useTranslation('waiting_room');
+
   return (
     <Stack>
-      <Heading color="gray.800">Config</Heading>
+      <Heading fontSize="2xl" color="gray.800">
+        {t('config')}
+      </Heading>
       <Stack>
         <Box>
-          <Text>Rounds:</Text>
+          <Text>{t('rounds')}:</Text>
           <Select
             bg={'gray.100'}
             border={0}
@@ -53,7 +58,7 @@ export const RoomConfig: FC<RoomConfigProps> = ({
         >
           {GAME_MODES.map((gm) => (
             <option key={gm.key} value={gm.key}>
-              {gm.value}
+              {t(gm.value)}
             </option>
           ))}
         </Select>
@@ -77,7 +82,7 @@ export const RoomConfig: FC<RoomConfigProps> = ({
         isLoading={isLoading}
         mb={2}
       >
-        Start game
+        {t('start_game')}
       </Button>
       <Button
         fontFamily={'heading'}
@@ -87,7 +92,7 @@ export const RoomConfig: FC<RoomConfigProps> = ({
         disabled={isLoading}
         isLoading={isLoading}
       >
-        Close room
+        {t('close_room')}
       </Button>
     </Stack>
   );

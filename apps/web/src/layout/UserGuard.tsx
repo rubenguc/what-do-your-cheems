@@ -1,4 +1,4 @@
-import { useUserContext } from '@wdyc/game';
+import { useUserContext } from '@wdyc/game/hooks';
 import { FC, PropsWithChildren } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 

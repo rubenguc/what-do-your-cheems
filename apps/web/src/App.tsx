@@ -3,7 +3,7 @@ import { ChakraProvider, Spinner } from '@chakra-ui/react';
 import Routes from './Routes';
 import { Toaster } from 'react-hot-toast';
 import { ConnectionInfo } from './layout';
-import { useSocketContext, useUserContext } from '@wdyc/game';
+import { useSocketContext, useUserContext } from '@wdyc/game/hooks';
 import { ReconnectResponse, User } from '@wdyc/game-interfaces';
 
 function App() {
