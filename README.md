@@ -5,7 +5,7 @@ An online card game based on the what do your meme card game.
 
 ## links
 
-- [Web](https://wdyc-web.vercel.app/)
+- [Web](https://what-do-your-cheems.vercel.app/)
 - [Telegram bot](https://t.me/wdyc_bot)
 - App (comming soon)
 
