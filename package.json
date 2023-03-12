@@ -7,7 +7,9 @@
   "scripts": {
     "start:server": "nx run server:serve",
     "start:web": "nx run web:serve",
-    "start:app": "nx run app:run-android"
+    "start:app": "nx run app:run-android",
+    "build:server": "nx build server",
+    "prod:server": "node dist/apps/server/main"
   },
   "private": false,
   "dependencies": {
