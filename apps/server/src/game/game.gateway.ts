@@ -536,6 +536,8 @@ export class GameGateway
           round,
           config,
           roomCreator: decodedRoom.roomCreator,
+          isEnded: decodedRoom.isEnded,
+          winner: decodedRoom.winner,
         },
       });
     } catch (error) {
@@ -630,7 +632,7 @@ export class GameGateway
 
       if (isRoundOver) {
         // send socket to all partcipants, the judge have to take the winner
-        this.server.to(roomCode).emit('all-players-ready');
+        this.server.in(roomCode).emit('all-players-ready');
 
         const judgeIndex = decodedRoom.players.findIndex(
           (p) => p.username === decodedRoom.judge.username
@@ -651,6 +653,9 @@ export class GameGateway
 
       return handleSocketResponse({
         message: 'ok',
+        data: {
+          isRoundOver,
+        },
       });
     } catch (error) {
       this.logger.error(error);
@@ -721,10 +726,15 @@ export class GameGateway
         );
         decodedRoom.winner = decodedRoom.players[index].username;
 
-        // client.broadcast.to(roomCode).emit('end-game', winnerPlayer);
-        client.emit('end-game', winnerPlayer);
+        this.server.in(roomCode).emit('end-game', { winner: winnerPlayer });
 
-        this.redisService.deleteRoom(roomCode);
+        // TODO: minimize json or save in database
+        decodedRoom.isEnded = true;
+
+        await this.redisService.updateRoom({
+          roomCode,
+          room: decodedRoom,
+        });
 
         return handleSocketResponse({
           message: 'ok',

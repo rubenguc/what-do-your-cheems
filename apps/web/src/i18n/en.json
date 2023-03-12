@@ -36,7 +36,12 @@
     "judge": "judge",
     "selected_card": "You have selected",
     "cancel": "Cancel",
-    "send": "Send"
+    "send": "Send",
+    "waiting_for_players": "Waiting for players...",
+    "select_the_winner_card": "Select the winner card",
+    "waiting_for_judge": "Waiting for judge...",
+    "starting_next_round": "Starting next round..",
+    "end_game": "End game"
   },
   "errors": {
     "invalid_username": "Invalid username",

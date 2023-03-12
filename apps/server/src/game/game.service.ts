@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { Room } from '@wdyc/game-interfaces';
 import Redis from 'ioredis';
 import {
   CreateRoomServiceProps,
@@ -6,7 +7,6 @@ import {
   UpdateRoomServiceProps,
 } from './dto/gameServices-dto';
 import { IORedisKey } from './redis.module';
-import { Room } from './types';
 
 @Injectable()
 export class GameService {
@@ -44,6 +44,7 @@ export class GameService {
         },
       ],
       isStarted: false,
+      isEnded: false,
     };
 
     await this.redisClient.set(roomCode, JSON.stringify(room));

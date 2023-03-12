@@ -17,6 +17,7 @@ import {
 } from '@wdyc/game-interfaces';
 import { useSocketContext } from './useSocketContext';
 import { useUserContext } from './useUserContext';
+import { useTranslation } from 'react-i18next';
 
 interface useRoomProps {
   navigate: (route: string) => void;
@@ -31,6 +32,7 @@ export const useRoom = ({
   onClear,
   onShowMessage,
 }: useRoomProps) => {
+  const { t } = useTranslation('room');
   // hooks
   const { isSocketOnline, socket } = useSocketContext();
   const { user } = useUserContext();
@@ -74,7 +76,8 @@ export const useRoom = ({
       socketMethod,
       data,
       (resp: SetCardResponse | SetWinnerCardResponse) => {
-        if (!isJudge)
+        if (resp.error) return onShowError(t(resp.message));
+        if (!isJudge) {
           setCardToSelect((state) =>
             state.filter((c) => {
               if (c.type === 'MEME') {
@@ -88,8 +91,15 @@ export const useRoom = ({
               return c;
             })
           );
-        if (socketMethod === 'set-card') {
-          onShowMessage('Waiting for players...', true);
+
+          if (socketMethod === 'set-card') {
+            onShowMessage(
+              resp.data?.isRoundOver
+                ? t('waiting_for_judge')
+                : t('waiting_for_players'),
+              true
+            );
+          }
         }
       }
     );
@@ -127,7 +137,21 @@ export const useRoom = ({
         round,
         config,
         roomCreator,
+        isEnded,
+        winner,
       } = resp.data!;
+
+      if (isEnded) {
+        setGame({
+          isEnded: true,
+          config: {},
+          winner: winner,
+          round: 0,
+          roomCreator: '',
+        });
+
+        return;
+      }
 
       setCardToSelect(cardsToSelect || []);
       setPlayers(players || []);
@@ -141,11 +165,11 @@ export const useRoom = ({
       setWaitingForJudge(waitingForJudge || cardsToSelect.length < 7);
       if (waitingForJudge || cardsToSelect.length < 7) {
         if (waitingForJudge && user.username === judge.username) {
-          return onShowMessage('Select the winner card', true);
+          return onShowMessage(t('select_the_winner_card'), true);
         }
 
         onShowMessage(
-          waitingForJudge ? 'Waiting for judge...' : 'Waiting for players...',
+          waitingForJudge ? t('waiting_for_judge') : t('waiting_for_judge'),
           true
         );
       }
@@ -192,15 +216,16 @@ export const useRoom = ({
     socket?.on('all-players-ready', () => {
       setWaitingForJudge(true);
       if (isJudge) {
-        return onShowMessage('Select the winner card', true);
+        return onShowMessage(t('select_the_winner_card'), true);
       }
-      onShowMessage('Waiting for judge...', true);
+      console.log('all-players-ready');
+      onShowMessage(t('waiting_for_judge'), true);
     });
 
     return () => {
       socket?.off('all-players-ready');
     };
-  }, [isSocketOnline, isJudge, socket, onShowMessage]);
+  }, [isSocketOnline, isJudge, socket, onShowMessage, t]);
 
   useEffect(() => {
     // socket called when judge select the winner card
@@ -227,7 +252,7 @@ export const useRoom = ({
       setJudge(resp.judge);
       setWaitingForJudge(false);
       setPlayerCards([]);
-      onShowMessage(`starting next round..`);
+      onShowMessage(t('starting_next_round'));
       setGame((state: any) => ({
         ...state,
         round: state.round + 1,
@@ -237,14 +262,13 @@ export const useRoom = ({
     return () => {
       socket?.off('next-round');
     };
-  }, [isSocketOnline, onShowError, onShowMessage, socket]);
+  }, [isSocketOnline, onShowError, onShowMessage, socket, t]);
 
   useEffect(() => {
-    socket?.on('end-game', (resp: string) => {
-      onShowError(`End game, winner: ${resp}`);
+    socket?.on('end-game', ({ winner }: { winner: string }) => {
       setGame({
         isEnded: true,
-        winner: resp,
+        winner: winner,
         config: '',
         round: 0,
       });

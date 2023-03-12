@@ -48,6 +48,7 @@ export interface Room {
   winner: string;
   players: Player[];
   isStarted: boolean;
+  isEnded: boolean;
 }
 
 export interface Judge {
@@ -122,6 +123,8 @@ export type GetRoomInfoResponse = SocketResponse<{
   round: number;
   config: RoomConfig;
   roomCreator: string;
+  isEnded: boolean;
+  winner: string;
 }>;
 
 // Set Card
@@ -129,7 +132,9 @@ export type GetRoomInfoResponse = SocketResponse<{
 export type SetCardPayload = CommonPayload & {
   card: Card;
 };
-export type SetCardResponse = SocketResponse<null>;
+export type SetCardResponse = SocketResponse<{
+  isRoundOver: boolean;
+}>;
 
 // Set Winnet Card
 export type SetWinnerCardPayload = CommonPayload & {
