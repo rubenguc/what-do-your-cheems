@@ -11,23 +11,18 @@ function App() {
   const { initUser, login, user } = useUserContext();
 
   useEffect(() => {
-    if (isSocketOnline && !user.isInit) {
+    if (isSocketOnline) {
       const user = localStorage.getItem('user');
-
       if (!user) return initUser();
-
       const parsedUser: User = JSON.parse(user);
-
       if (!parsedUser.roomCode) return initUser();
-
       socket?.emit('reconnect', parsedUser, (resp: ReconnectResponse) => {
         if (resp.error || !resp?.data?.room) {
           window.localStorage.removeItem('user');
           return initUser();
         }
-
         const roomIsStarted = resp.data.room.isStarted;
-
+        window.localStorage.setItem('user', JSON.stringify(resp.data));
         login({
           roomCode: parsedUser.roomCode || '',
           username: parsedUser.username || '',
@@ -35,7 +30,8 @@ function App() {
         });
       });
     }
-  }, [user.isInit, isSocketOnline, socket, login, initUser]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSocketOnline]);
 
   return (
     <ChakraProvider>
