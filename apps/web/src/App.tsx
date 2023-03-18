@@ -11,15 +11,12 @@ function App() {
   const { initUser, login, user } = useUserContext();
 
   useEffect(() => {
-    console.log('socket online:', isSocketOnline, socket?.id);
     if (isSocketOnline) {
       const user = localStorage.getItem('user');
-      console.log('search user: ', user);
       if (!user) return initUser();
       const parsedUser: User = JSON.parse(user);
       if (!parsedUser.roomCode) return initUser();
       socket?.emit('reconnect', parsedUser, (resp: ReconnectResponse) => {
-        console.log('reconnect response', resp);
         if (resp.error || !resp?.data?.room) {
           window.localStorage.removeItem('user');
           return initUser();

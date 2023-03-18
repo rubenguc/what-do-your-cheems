@@ -13,7 +13,9 @@ export const FinishGame: FC<FinishGameProps> = ({ finishGame }) => {
 
   return (
     <>
-      <Button onClick={onOpen}>{t('finish_game')}</Button>
+      <Button size="xs" onClick={onOpen}>
+        {t('finish_game')}
+      </Button>
 
       <ConfirmModal
         isOpen={isOpen}
