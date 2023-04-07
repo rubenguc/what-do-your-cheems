@@ -13,6 +13,7 @@ import { PhraseToCompleteModule } from './phrase-to-complete/phrase-to-complete.
 import { PendingToAproveModule } from './pending-to-aprove/pending-to-aprove.module';
 import { UploadModule } from './upload/upload.module';
 import { TelegramContributionModule } from './telegram-contribution/telegram-contribution.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -50,5 +51,6 @@ import { TelegramContributionModule } from './telegram-contribution/telegram-con
       useFactory: () => new SentryInterceptor(),
     },
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
