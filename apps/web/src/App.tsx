@@ -6,9 +6,17 @@ import { ConnectionInfo } from './layout';
 import { useSocketContext, useUserContext } from '@wdyc/game/hooks';
 import { ReconnectResponse, User } from '@wdyc/game-interfaces';
 
+const SERVER_URL = import.meta.env.VITE_SOCKET_URL;
+
 function App() {
   const { isSocketOnline, socket } = useSocketContext();
   const { initUser, login, user } = useUserContext();
+
+  useEffect(() => {
+    (async () => {
+      await fetch(`${SERVER_URL}/version`);
+    })();
+  }, []);
 
   useEffect(() => {
     if (isSocketOnline) {

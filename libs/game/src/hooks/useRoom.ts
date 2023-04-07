@@ -218,7 +218,6 @@ export const useRoom = ({
       if (isJudge) {
         return onShowMessage(t('select_the_winner_card'), true);
       }
-      console.log('all-players-ready');
       onShowMessage(t('waiting_for_judge'), true);
     });
 
