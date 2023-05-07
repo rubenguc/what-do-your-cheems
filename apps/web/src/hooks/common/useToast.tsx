@@ -14,7 +14,7 @@ export const useToast = () => {
       id: id || 'success-toast',
       position: 'top-center',
       duration: persistent ? Infinity : 5000,
-      icon: persistent ? <Spinner size="sm" /> : '',
+      icon: persistent ? <Spinner size="sm" /> : null,
     });
   };
 
@@ -26,8 +26,13 @@ export const useToast = () => {
     });
   };
 
+  const closeAllToasts = () => {
+    toast.remove();
+  };
+
   return {
     showSuccessToast,
     showErrorToast,
+    closeAllToasts,
   };
 };

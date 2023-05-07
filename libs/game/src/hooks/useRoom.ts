@@ -14,6 +14,7 @@ import {
   RoomJudge,
   ReceiveCard,
   Judge,
+  Player,
 } from '@wdyc/game-interfaces';
 import { useSocketContext } from './useSocketContext';
 import { useUserContext } from './useUserContext';
@@ -24,6 +25,7 @@ interface useRoomProps {
   onShowError: (message: string) => void;
   onShowMessage: (message: string, persistent?: boolean, id?: string) => void;
   onClear: () => void;
+  onCloseAllToasts: () => void;
 }
 
 export const useRoom = ({
@@ -31,6 +33,7 @@ export const useRoom = ({
   onShowError,
   onClear,
   onShowMessage,
+  onCloseAllToasts,
 }: useRoomProps) => {
   const { t } = useTranslation('room');
   // hooks
@@ -54,6 +57,7 @@ export const useRoom = ({
     winner: '',
     round: 0,
     roomCreator: '',
+    players: [],
   });
   const [waitingForJudge, setWaitingForJudge] = useState(false);
 
@@ -264,14 +268,19 @@ export const useRoom = ({
   }, [isSocketOnline, onShowError, onShowMessage, socket, t]);
 
   useEffect(() => {
-    socket?.on('end-game', ({ winner }: { winner: string }) => {
-      setGame({
-        isEnded: true,
-        winner: winner,
-        config: '',
-        round: 0,
-      });
-    });
+    socket?.on(
+      'end-game',
+      ({ winner, players }: { winner?: string; players: Player[] }) => {
+        onCloseAllToasts();
+        setGame({
+          isEnded: true,
+          winner: winner,
+          config: '',
+          round: 0,
+          players,
+        });
+      }
+    );
 
     return () => {
       socket?.off('end-game');

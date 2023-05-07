@@ -717,16 +717,37 @@ export class GameGateway
 
       if (decodedRoom.round > decodedRoom.config.totalRounds) {
         this.logger.debug('*** GAME ENDED ***');
-        // winner
-        const maxWins = Math.max(
-          ...decodedRoom.players.map((p) => p.numberOfWins)
-        );
-        const index = decodedRoom.players.findIndex(
-          (p) => p.numberOfWins === maxWins
-        );
-        decodedRoom.winner = decodedRoom.players[index].username;
 
-        this.server.in(roomCode).emit('end-game', { winner: winnerPlayer });
+        // create an array with all players, ordered by numberOfWins
+        const players = decodedRoom.players
+          .sort((a, b) => {
+            if (a.numberOfWins > b.numberOfWins) {
+              return -1;
+            }
+            if (a.numberOfWins < b.numberOfWins) {
+              return 1;
+            }
+            return 0;
+          })
+          .map((p) => ({
+            username: p.username,
+            numberOfWins: p.numberOfWins,
+          }));
+
+        // find winner player based on numberOfWins, It must be only one winner, verify if there is a tie
+        let winnerPlayer = players[0];
+        const winnerPlayerIndex = players
+          .slice(1)
+          .findIndex((p) => p.numberOfWins === winnerPlayer.numberOfWins);
+
+        if (winnerPlayerIndex > -1) {
+          winnerPlayer = null;
+        }
+
+        this.server.in(roomCode).emit('end-game', {
+          winner: winnerPlayer?.username || null,
+          players,
+        });
 
         // TODO: minimize json or save in database
         decodedRoom.isEnded = true;

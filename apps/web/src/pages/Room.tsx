@@ -5,7 +5,14 @@ import {
   CardBody,
   Flex,
   HStack,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
   Text,
+  Th,
+  Thead,
+  Tr,
 } from '@chakra-ui/react';
 import { FinishGame, JudgeCard, Players } from '../components/pages/room';
 import { Cards } from '../components/pages/room/Cards';
@@ -15,6 +22,7 @@ import { useUserContext, useRoom } from '@wdyc/game/hooks';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../hooks/common/useToast';
 import { useTranslation } from 'react-i18next';
+import { FaCrown } from 'react-icons/fa';
 
 export const Room = () => {
   const { t } = useTranslation('room');
@@ -22,7 +30,7 @@ export const Room = () => {
   const jsConfetti = new JSConfetti();
   const navigate = useNavigate();
 
-  const { showErrorToast, showSuccessToast } = useToast();
+  const { showErrorToast, showSuccessToast, closeAllToasts } = useToast();
 
   const { user, clear } = useUserContext();
 
@@ -48,6 +56,7 @@ export const Room = () => {
     onShowError: showErrorToast,
     onClear,
     onShowMessage: showSuccessToast,
+    onCloseAllToasts: closeAllToasts,
   });
 
   const userIsWinner = game.winner && game.winner === user.username;
@@ -74,11 +83,49 @@ export const Room = () => {
         h="full"
         justifyContent="center"
       >
-        <Card bgColor="white">
+        <Card bgColor="white" width="full" maxW="md" mx="auto">
           <CardBody>
-            <Text color="black">
-              {t('winner')}: {game.winner}
-            </Text>
+            <Box mb={3} textAlign="center">
+              {game.winner ? (
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap={2}
+                  justifyContent="center"
+                  fontSize="4xl"
+                  fontWeight="bold"
+                >
+                  <FaCrown color="#d9a760" />
+                  <Text color="black">{game.winner}</Text>
+                </Box>
+              ) : (
+                <Text fontSize="4xl" fontWeight="bold">
+                  {t('tie')}
+                </Text>
+              )}
+            </Box>
+
+            <TableContainer>
+              <Table variant="simple">
+                <Thead>
+                  <Tr>
+                    <Th textTransform="capitalize">{t('player')}</Th>
+                    <Th textAlign="center" textTransform="capitalize">
+                      {t('number_of_wins')}
+                    </Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {game.players?.map((player) => (
+                    <Tr key={player.username}>
+                      <Td>{player.username}</Td>
+                      <Td textAlign="center">{player.numberOfWins}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+
             <Flex justifyContent="center" mt={5}>
               <Button onClick={goToHome} mx="auto">
                 {t('exit')}

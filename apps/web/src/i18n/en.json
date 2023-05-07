@@ -41,7 +41,10 @@
     "select_the_winner_card": "Select the winner card",
     "waiting_for_judge": "Waiting for judge...",
     "starting_next_round": "Starting next round..",
-    "end_game": "End game"
+    "end_game": "End game",
+    "number_of_wins": "Number of wins",
+    "player": "Player",
+    "tie": "Tie"
   },
   "errors": {
     "invalid_username": "Invalid username",
