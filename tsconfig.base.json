@@ -18,8 +18,8 @@
     "baseUrl": ".",
     "paths": {
       "@server/*": ["apps/server/src/*"],
-      "@wdyc/game/*": ["libs/game/src/*"],
       "@wdyc/game-interfaces": ["libs/game-interfaces/src/index.ts"],
+      "@wdyc/game/*": ["libs/game/src/*"],
       "@web/*": ["apps/web/src/*"]
     }
   },
