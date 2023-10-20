@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+  mongo:
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE=wdyc
+      - MONGO_INITDB_USER=mongodb
+      - MONGO_INITDB_PWD=mongodb
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./volumes/mongo:/data/db
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:root@mongo:27017
+
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
+    command: redis-server --requirepass root
+    volumes:
+      - ./volumes/redis:/data

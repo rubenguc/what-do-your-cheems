@@ -1,0 +1,14 @@
+{
+  "globalEnv": [".env"],
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "outputs": ["dist/**"]
+    },
+    "lint": {},
+    "dev": {
+      "cache": false,
+      "dotEnv": [".env"]
+    }
+  }
+}
