@@ -1,0 +1,7 @@
+{
+  "name": "wdyc-utils",
+  "main": "./index.js",
+  "dependencies": {
+    "typescript": "5.1.3"
+  }
+}

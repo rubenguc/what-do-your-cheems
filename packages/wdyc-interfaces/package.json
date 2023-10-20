@@ -1,0 +1,6 @@
+{
+  "name": "wdyc-interfaces",
+  "dependencies": {
+    "typescript": "5.1.3"
+  }
+}

@@ -6,6 +6,13 @@ import { EnvService } from './env/env.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SentryInterceptor, SentryModule } from '@travelerdev/nestjs-sentry';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { GameModule } from './game/game.module';
+import { MemeModule } from './meme/meme.module';
+import { PhraseToAnswerModule } from './phrase-to-answer/phrase-to-answer.module';
+import { PhraseToCompleteModule } from './phrase-to-complete/phrase-to-complete.module';
+import { PendingToAproveModule } from './pending-to-aprove/pending-to-aprove.module';
+import { UploadModule } from './upload/upload.module';
+import { TelegramContributionModule } from './telegram-contribution/telegram-contribution.module';
 
 @Module({
   imports: [
@@ -29,6 +36,13 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
         environment: env.NODE_ENV,
       }),
     }),
+    GameModule,
+    MemeModule,
+    PhraseToAnswerModule,
+    PhraseToCompleteModule,
+    PendingToAproveModule,
+    UploadModule,
+    TelegramContributionModule,
   ],
   controllers: [AppController],
   providers: [
