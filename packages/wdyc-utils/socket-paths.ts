@@ -24,6 +24,8 @@ const PATHS = {
   START_GAME,
 };
 
-module.exports = {
-  PATHS,
-};
+// module.exports = {
+//   PATHS,
+// };
+
+export { PATHS };

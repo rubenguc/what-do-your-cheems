@@ -1,7 +1,14 @@
 {
   "name": "wdyc-utils",
-  "main": "./index.js",
-  "dependencies": {
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup index.ts --format cjs,esm --dts",
+    "dev": "npm run build -- --watch"
+  },
+  "devDependencies": {
+    "tsup": "^7.2.0",
     "typescript": "5.1.3"
   }
 }

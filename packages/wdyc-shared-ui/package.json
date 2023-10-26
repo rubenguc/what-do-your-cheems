@@ -1,0 +1,14 @@
+{
+  "name": "wdyc-shared-ui",
+  "dependencies": {
+    "react-i18next": "^13.3.1",
+    "socket.io-client": "^4.7.2",
+    "wdyc-utils": "workspace:*",
+    "react": "^18.2.0",
+    "zustand": "^4.4.4"
+  },
+  "devDependencies": {
+    "typescript": "5.1.3",
+    "wdyc-interfaces": "workspace:*"
+  }
+}
