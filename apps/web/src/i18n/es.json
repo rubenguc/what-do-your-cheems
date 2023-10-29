@@ -1,3 +1,67 @@
 {
-  "home": {}
+  "home": {
+    "create_game": "Crear partida",
+    "join_game": "Unirse a partida",
+    "upload_memes_phrases": "Sube tus propios memes y frases",
+    "give_me_a_star": "Dame un estrella",
+    "create_room": "Crear sala",
+    "create_button_text": "Crear",
+    "join_room": "Unirne a sala",
+    "join_room_button_text": "Unirse",
+    "username_placeholder": "nombre de usuario",
+    "room_code_placeholder": "código de la sala"
+  },
+  "waiting_room": {
+    "title": "Sala de espera",
+    "code": "códido",
+    "code_copied": "Código copiado",
+    "config": "Configuración",
+    "rounds": "Rondas",
+    "game_mode_meme": "Carta principal: Meme",
+    "game_mode_phrase": "Carta principal: Frase",
+    "start_game": "Iniciar partida",
+    "close_room": "Cerrar partida",
+    "players": "Jugadores",
+    "leave_room": "Salir de la sala",
+    "leave_room_confirm": "¿Estás seguro de que quieres salir de la sala?",
+    "close_room_confirm": "¿Estás seguro de que quieres cerrar la sala?"
+  },
+  "room": {
+    "winner": "Ganador",
+    "exit": "Salir",
+    "username": "nombre de usuario",
+    "round": "ronda",
+    "finish_game": "Terminar juego",
+    "finish_game_confirmation": "¿Estás seguro de que quieres terminar el juego?",
+    "judge": "juez",
+    "selected_card": "Haz seleccionado",
+    "cancel": "Cancelar",
+    "send": "Enviar",
+    "waiting_for_players": "Esperando por otros jugadores...",
+    "select_the_winner_card": "Selecciona la carta ganadora",
+    "waiting_for_judge": "Esperando por el juez...",
+    "starting_next_round": "Iniciando siguiente ronda...",
+    "end_game": "Terminar juego",
+    "number_of_wins": "Número de victorias",
+    "player": "Jugador",
+    "tie": "Empate"
+  },
+  "errors": {
+    "invalid_username": "Usuario inválido",
+    "invalid_room_code": "Código de sala inválido",
+    "connection_error": "Error de conexión",
+    "server_error": "Error del servidor",
+    "room_does_not_exist": "La sala no existe",
+    "room_already_started": "La sala ya ha iniciado",
+    "username_already_taken": "El nombre de usuario ya está en uso",
+    "invalid_room": "Sala inválida",
+    "room_not_found": "Sala no encontrada",
+    "player_not_found": "Jugador no encontrado",
+    "player_can_not_start_the_game": "El jugador no puede iniciar el juego",
+    "at_least_three_players_to_start_game": "Al menos tres jugadores para iniciar el juego",
+    "invalid_card": "Carta inválida",
+    "you_already_played": "Ya has jugado",
+    "your_are_not_room_creator": "No eres el creador de la sala",
+    "not_enough_cards_to_play": "No hay suficientes cartas para jugar"
+  }
 }

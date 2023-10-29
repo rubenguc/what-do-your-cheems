@@ -71,7 +71,7 @@ export interface WaitRoomPlayer {
 export interface RoomPlayer {
   username: string;
   numberOfWins: number;
-  avatar: string;
+  avatar: number;
 }
 
 // Socket interfaces
