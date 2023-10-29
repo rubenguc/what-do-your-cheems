@@ -1,4 +1,3 @@
-import { Spinner } from '@chakra-ui/react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -14,7 +13,7 @@ export const useToast = () => {
       id: id || 'success-toast',
       position: 'top-center',
       duration: persistent ? Infinity : 5000,
-      icon: persistent ? <Spinner size="sm" /> : null,
+      // icon: persistent ? <Spinner size="sm" /> : null,
     });
   };
 
@@ -26,12 +25,21 @@ export const useToast = () => {
     });
   };
 
+  const showInfoToast = (message: string) => {
+    toast(tServer(message), {
+      id: 'info-toast',
+      position: 'top-center',
+      duration: 3300,
+    });
+  }
+
   const closeAllToasts = () => {
     toast.remove();
   };
 
   return {
     showSuccessToast,
+    showInfoToast,
     showErrorToast,
     closeAllToasts,
   };

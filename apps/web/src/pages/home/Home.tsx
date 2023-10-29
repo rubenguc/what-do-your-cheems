@@ -1,118 +1,127 @@
-import {
-  Button,
-  HStack,
-  Stack,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { Image } from '@chakra-ui/react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { BsTelegram, BsGithub } from 'react-icons/bs';
-// import pkg from '../../../../package.json';
-import { useTranslation } from 'react-i18next';
-import { CreateRoom, JoinRoom } from './components';
+import { AnimatePresence, motion } from "framer-motion";
+import { BsTelegram, BsGithub } from "react-icons/bs";
+import { useTranslation } from "react-i18next";
+import { PlayerForm } from "./components";
+import { useHome, useUserContext } from "wdyc-shared-ui/hooks";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "../../hooks/common";
+import { LoginProps } from "wdyc-interfaces";
+import { MenuContainer } from '../../components/common/MenuContainer';
 
 const GITHUB_LINK = import.meta.env.VITE_GITHUB_LINK;
 const TELEGRAM_LINK = import.meta.env.VITE_TELEGRAM_LINK;
 
+const OPTIONS = ["create_game", "join_game"];
+const LINKS = [
+  {
+    title: "upload_memes_phrases",
+    link: TELEGRAM_LINK,
+    icon: <BsTelegram className="w-4 h-4" />,
+  },
+  {
+    title: "give_me_a_star",
+    link: GITHUB_LINK,
+    icon: <BsGithub className="w-4 h-4" />,
+  },
+];
+
 export const Home = () => {
-  const { t } = useTranslation('home');
+  const { t } = useTranslation("home");
+  const { showErrorToast } = useToast();
+  const navigate = useNavigate();
+  const { login } = useUserContext();
+
+
+  const onLogin = (data: any) => {
+    if (!data) return;
+    localStorage.setItem('user', JSON.stringify(data));
+    login(data as LoginProps);
+  };
+
+
+  const { selectedOption, setSelectedOption, onChangeForm, loginForm, createRoom, joinRoom } =
+    useHome({
+      navigate,
+      onShowError: showErrorToast,
+      onLogin,
+    });
+
+
 
   return (
-    <>
-      <HStack justifyContent="center" pt="10" minH="166px">
+    <div className="flex flex-col items-center h-full justify-center">
+      <div className="flex justify-center min-h-[166px] gap-3 -mt-32">
         <AnimatePresence>
-          <Image
-            key="image"
-            as={motion.img}
-            minW="122px"
-            initial={{ opacity: 0, x: -50, rotate: -10 }}
+          <motion.img
+            className="min-w-[122px] max-w-[100px] transform rotate-10"
+            initial={{ opacity: 0, x: -100, rotate: -20 }}
             animate={{ opacity: 1, x: 0, rotate: 10 }}
-            transition="0.5s linear"
+            transition={{
+              ease: "linear",
+              duration: 1,
+            }}
             src="/assets/logo.png"
-            maxW="100px"
-            transform="rotate(10deg)"
+            key="logo"
           />
-          <Stack>
-            <Text
-              key="text"
-              as={motion.p}
+
+          <div className="flex flex-col gap-1">
+            <motion.h1
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition="0.6s linear"
-              whiteSpace="break-spaces"
-              color="white"
-              fontSize="3xl"
-              fontWeight="bold"
+              transition={{
+                ease: "linear",
+                duration: 1,
+              }}
+              className="text-4xl font-bold text-white white whitespace-break-spaces mt-7"
             >
-              {'What do your \ncheems?'}
-            </Text>
-            {/* <Text fontSize="sm" color="white" fontWeight="bold">
-              v {pkg.version}
-            </Text> */}
-          </Stack>
+              {"What do your \ncheems?"}
+            </motion.h1>
+          </div>
         </AnimatePresence>
-      </HStack>
+      </div>
 
-      <AnimatePresence>
-        <Stack
-          as={motion.div}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          mt="7"
-          bg={'gray.50'}
-          rounded={'xl'}
-          p={{ base: 4, sm: 6, md: 8 }}
-          spacing={{ base: 8 }}
-          maxW="lg"
-          w="full"
-          mx="auto"
-        >
-          <Tabs isFitted variant="soft-rounded">
-            <TabList mb="1em">
-              <Tab>{t('create_tab')}</Tab>
-              <Tab>{t('join_tab')}</Tab>
-            </TabList>
-            <TabPanels>
-              <TabPanel>
-                <CreateRoom />
-              </TabPanel>
-              <TabPanel>
-                <JoinRoom />
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
-          <VStack gap={1} alignItems="start">
-            <a href={TELEGRAM_LINK} target="_blank" rel="noreferrer">
-              <Button
-                leftIcon={<BsTelegram />}
-                size="sm"
-                textDecoration="none"
-                textTransform="none"
-                variant="ghost"
-              >
-                {t('upload_memes_phrases')}
-              </Button>
-            </a>
-            <a href={GITHUB_LINK} target="_blank" rel="noreferrer">
-              <Button
-                leftIcon={<BsGithub />}
-                size="sm"
-                textDecoration="none"
-                textTransform="none"
-                variant="ghost"
-              >
-                {t('give_me_a_star')}
-              </Button>
-            </a>
-          </VStack>
-        </Stack>
-      </AnimatePresence>
-    </>
-  )
-}
+      {!selectedOption ? (
+        <AnimatePresence>
+          <MenuContainer>
+            <div className="flex flex-col gap-4">
+              {OPTIONS.map((option, index) => (
+                <motion.button
+                  key={index}
+                  type="button"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setSelectedOption(option)}
+                  className="tracking-wide text-xl focus:outline-none font-extrabold rounded-xl px-5 py-2.5 inline-flex items-center justify-center bg-indigo-600 text-white hover:bg-indigo-500"
+                >
+                  {t(option)}
+                </motion.button>
+              ))}
+            </div>
+            <div className="flex flex-col mt-10 gap-4">
+              {LINKS.map((link, index) => (
+                <a
+                  key={index}
+                  href={link.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 text-white text-sm"
+                >
+                  {link.icon}
+                  {t(link.title)}
+                </a>
+              ))}
+            </div>
+          </MenuContainer>
+        </AnimatePresence>
+      ) : (
+        <PlayerForm
+          onChangeForm={onChangeForm}
+          form={loginForm}
+          selectedOption={selectedOption}
+          onBack={() => setSelectedOption(null)}
+          onSubmit={() => selectedOption === "create_game" ? createRoom() : joinRoom()}
+        />
+      )}
+    </div>
+  );
+};

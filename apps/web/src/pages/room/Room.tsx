@@ -1,19 +1,3 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardBody,
-  Flex,
-  HStack,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-} from '@chakra-ui/react';
 import { Cards, FinishGame, JudgeCard, Players } from './components';
 import JSConfetti from 'js-confetti';
 import { useEffect } from 'react';
@@ -73,95 +57,107 @@ export const Room = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [game.winner, userIsWinner]);
 
+
+
   if (game.isEnded) {
     return (
-      <Box
-        py={2}
-        display="flex"
-        flexDirection="column"
-        h="full"
-        justifyContent="center"
-      >
-        <Card bgColor="white" width="full" maxW="md" mx="auto">
-          <CardBody>
-            <Box mb={3} textAlign="center">
-              {game.winner ? (
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  gap={2}
-                  justifyContent="center"
-                  fontSize="4xl"
-                  fontWeight="bold"
-                >
-                  <FaCrown color="#d9a760" />
-                  <Text color="black">{game.winner}</Text>
-                </Box>
-              ) : (
-                <Text fontSize="4xl" fontWeight="bold">
-                  {t('tie')}
-                </Text>
-              )}
-            </Box>
+      <>
+      </>
+      // <Box
+      //   py={2}
+      //   display="flex"
+      //   flexDirection="column"
+      //   h="full"
+      //   justifyContent="center"
+      // >
+      //   <Card bgColor="white" width="full" maxW="md" mx="auto">
+      //     <CardBody>
+      //       <Box mb={3} textAlign="center">
+      //         {game.winner ? (
+      //           <Box
+      //             display="flex"
+      //             alignItems="center"
+      //             gap={2}
+      //             justifyContent="center"
+      //             fontSize="4xl"
+      //             fontWeight="bold"
+      //           >
+      //             <FaCrown color="#d9a760" />
+      //             <Text color="black">{game.winner}</Text>
+      //           </Box>
+      //         ) : (
+      //           <Text fontSize="4xl" fontWeight="bold">
+      //             {t('tie')}
+      //           </Text>
+      //         )}
+      //       </Box>
 
-            <TableContainer>
-              <Table variant="simple">
-                <Thead>
-                  <Tr>
-                    <Th textTransform="capitalize">{t('player')}</Th>
-                    <Th textAlign="center" textTransform="capitalize">
-                      {t('number_of_wins')}
-                    </Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {game.players?.map((player) => (
-                    <Tr key={player.username}>
-                      <Td>{player.username}</Td>
-                      <Td textAlign="center">{player.numberOfWins}</Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
+      //       <TableContainer>
+      //         <Table variant="simple">
+      //           <Thead>
+      //             <Tr>
+      //               <Th textTransform="capitalize">{t('player')}</Th>
+      //               <Th textAlign="center" textTransform="capitalize">
+      //                 {t('number_of_wins')}
+      //               </Th>
+      //             </Tr>
+      //           </Thead>
+      //           <Tbody>
+      //             {game.players?.map((player) => (
+      //               <Tr key={player.username}>
+      //                 <Td>{player.username}</Td>
+      //                 <Td textAlign="center">{player.numberOfWins}</Td>
+      //               </Tr>
+      //             ))}
+      //           </Tbody>
+      //         </Table>
+      //       </TableContainer>
 
-            <Flex justifyContent="center" mt={5}>
-              <Button onClick={goToHome} mx="auto">
-                {t('exit')}
-              </Button>
-            </Flex>
-          </CardBody>
-        </Card>
-      </Box>
+      //       <Flex justifyContent="center" mt={5}>
+      //         <Button onClick={goToHome} mx="auto">
+      //           {t('exit')}
+      //         </Button>
+      //       </Flex>
+      //     </CardBody>
+      //   </Card>
+      // </Box>
     );
   }
 
+  console.log({
+    players
+  })
+
   return (
-    <Box py={2} display="flex" flexDirection="column" h="full">
-      <HStack justifyContent="space-between">
-        <Text color="white">
-          {t('username')}: {user.username}
-        </Text>
-        <HStack gap={2}>
-          <Text color="white">
-            {t('round')}: {game.round}/{game.config?.totalRounds}
-          </Text>
-          {isRoomCreator && <FinishGame finishGame={finishGame} />}
-        </HStack>
-      </HStack>
+    <div className='flex flex-col h-full'>
+      <div className='flex justify-between px-2 py-2 bg-gray-700'>
+        <p></p>
+        <p color="white">
+          {t('round')}: {game.round}/{game.config?.totalRounds}
+        </p>
+        {isRoomCreator && <FinishGame finishGame={finishGame} />}
+      </div>
 
-      <Box flex="1">
-        <JudgeCard judge={judge} />
-      </Box>
-      <Cards
-        cards={cardsToSelect}
-        setCard={setCard}
-        waitingForJudge={waitingForJudge}
-        playerCards={playerCards}
-        isJudge={isJudge}
-      />
+      <div className='flex flex-col py-2 flex-1'>
 
-      <Players players={players} judgeUsername={judge.username} />
-    </Box>
+        <div className='flex-1'>
+          <JudgeCard judge={judge} />
+        </div>
+
+        <div>
+          <Cards
+            cards={cardsToSelect}
+            setCard={setCard}
+            waitingForJudge={waitingForJudge}
+            playerCards={playerCards}
+            isJudge={isJudge}
+          />
+
+          <Players players={players} judgeUsername={judge.username} />
+        </div>
+      </div>
+
+    </div>
+
   );
 };

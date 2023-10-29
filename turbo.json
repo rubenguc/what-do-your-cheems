@@ -12,6 +12,9 @@
     "dev": {
       "cache": false,
       "dotEnv": [".env"]
+    },
+    "seed": {
+      "cache": false
     }
   }
 }

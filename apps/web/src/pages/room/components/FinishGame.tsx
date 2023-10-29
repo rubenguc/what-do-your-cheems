@@ -1,7 +1,8 @@
 import { FC } from 'react';
-import { Button, useDisclosure } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmModal } from '../../../components/common';
+import { useModal } from '../../../hooks/common';
+import { Button } from '../../../components/ui';
 
 interface FinishGameProps {
   finishGame: () => void;
@@ -9,17 +10,18 @@ interface FinishGameProps {
 
 export const FinishGame: FC<FinishGameProps> = ({ finishGame }) => {
   const { t } = useTranslation('room');
-  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { isOpenModal, onOpenModal, onCloseModal } = useModal()
 
   return (
     <>
-      <Button size="xs" onClick={onOpen}>
+      <Button size="xs" onClick={onOpenModal}>
         {t('finish_game')}
       </Button>
 
       <ConfirmModal
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={isOpenModal}
+        onClose={onCloseModal}
         onConfirm={finishGame}
         message={t('finish_game_confirmation')}
       />

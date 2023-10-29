@@ -7,6 +7,7 @@ import { useSocketContext } from "./useSocketContext";
 interface LoginForm {
   username: string;
   roomCode?: string;
+  avatar: number;
 }
 
 interface useHomeProps {
@@ -21,12 +22,24 @@ export const useHome = ({ navigate, onShowError, onLogin }: useHomeProps) => {
 
   if (!user) throw new Error("User context needed");
 
-  const [loginForm, setLoginForm] = useState<LoginForm>({
-    username: "",
-    roomCode: "",
+  const [selectedOption, setSelectedOption] = useState<
+    "create_game" | "join_game" | null
+  >(null);
+
+  const [loginForm, setLoginForm] = useState<LoginForm>(() => {
+    const randomNumber = Math.floor(Math.random() * 5) + 1;
+
+    return {
+      username: "",
+      roomCode: "",
+      avatar: randomNumber,
+    };
   });
 
-  const onChangeForm = (name: "username" | "roomCode", value: string) => {
+  const onChangeForm = (
+    name: "username" | "roomCode" | "avatar",
+    value: any
+  ) => {
     setLoginForm((state) => ({
       ...state,
       [name]: value,
@@ -35,12 +48,14 @@ export const useHome = ({ navigate, onShowError, onLogin }: useHomeProps) => {
 
   const createRoom = () => {
     const username = loginForm.username.trim();
+    const avatar = loginForm.avatar;
 
     if (!username) return onShowError(messages.error.invalid_username);
     if (!isSocketOnline) return onShowError(messages.error.connection_error);
 
     const data = {
       username,
+      avatar,
     };
 
     socket?.emit("create-room", data, (res: CreateRoomResponse) => {
@@ -53,12 +68,15 @@ export const useHome = ({ navigate, onShowError, onLogin }: useHomeProps) => {
   const joinRoom = () => {
     const username = loginForm.username.trim();
     const roomCode = loginForm.roomCode?.trim();
+    const avatar = loginForm.avatar;
+
     if (!username) return onShowError(messages.error.invalid_username);
     if (!roomCode) return onShowError(messages.error.invalid_room_code);
     if (!isSocketOnline) return onShowError(messages.error.connection_error);
     const data = {
       username,
       roomCode,
+      avatar,
     };
     socket?.emit("join-room", data, (res: JoinRoomResponse) => {
       if (res.error) return onShowError(res.message);
@@ -79,5 +97,7 @@ export const useHome = ({ navigate, onShowError, onLogin }: useHomeProps) => {
     createRoom,
     joinRoom,
     onChangeForm,
+    selectedOption,
+    setSelectedOption,
   };
 };

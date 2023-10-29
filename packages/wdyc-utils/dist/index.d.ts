@@ -15,6 +15,7 @@ declare const messages: {
         invalid_card: string;
         you_already_played: string;
         you_are_not_room_creator: string;
+        not_enough_cards_to_play: string;
     };
 };
 

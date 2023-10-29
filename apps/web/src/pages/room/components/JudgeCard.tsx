@@ -1,6 +1,4 @@
 import { FC } from 'react';
-import { Avatar, Box, Stack, Text } from '@chakra-ui/react';
-import { useTranslation } from 'react-i18next';
 import { RoomJudge } from 'wdyc-interfaces';
 import { Card } from '../../../components/common';
 
@@ -9,24 +7,25 @@ interface JudgeCardProps {
 }
 
 export const JudgeCard: FC<JudgeCardProps> = ({ judge }) => {
-  const { t } = useTranslation('room');
   const imageOrientiation = judge.card.imageOrientation;
 
+  console.log(JudgeCard)
+
   return (
-    <Stack
-      direction={imageOrientiation === 'H' ? 'column-reverse' : 'row'}
-      alignItems="normal"
-      justifyContent="center"
+    <div
+      className={`flex flex-col gap-2 w-full h-full`}
     >
       <Card card={judge.card} isInJudgePosition />
-
-      <Box w="fit-content">
-        <Text color="white">{t('judge')}:</Text>
-        <Avatar />
-        <Text color="white" textAlign="center">
-          {judge?.username || ''}
-        </Text>
-      </Box>
-    </Stack>
+      {/* 
+      // <div className='w-fit' >
+      //   <p color="white">{t('judge')}:</p>
+      //   <img
+      //     src={AVATARS[judge?.avatar || '']}
+      //   />
+      //   <p className='text-center'>
+      //     {judge?.username || ''}
+      //   </p>
+      // </div> */}
+    </div>
   );
 };

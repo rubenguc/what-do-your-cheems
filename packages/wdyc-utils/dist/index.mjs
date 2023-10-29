@@ -15,7 +15,8 @@ var messages = {
     at_least_three_players_to_start_game: "at_least_three_players_to_start_game",
     invalid_card: "invalid_card",
     you_already_played: "you_already_played",
-    you_are_not_room_creator: "your_are_not_room_creator"
+    you_are_not_room_creator: "your_are_not_room_creator",
+    not_enough_cards_to_play: "not_enough_cards_to_play"
   }
 };
 

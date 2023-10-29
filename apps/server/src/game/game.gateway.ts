@@ -81,7 +81,7 @@ export class GameGateway
     payload: CreateRoomPayload,
   ): Promise<CreateRoomResponse> {
     try {
-      const { username } = payload;
+      const { username, avatar } = payload;
 
       const nanoid = customAlphabet('1234567890', 6);
       const roomCode = nanoid();
@@ -89,6 +89,7 @@ export class GameGateway
       await this.redisService.createRoom({
         roomCode,
         username,
+        avatar,
         socketId: client.id,
       });
 
@@ -124,7 +125,7 @@ export class GameGateway
   ): Promise<JoinRoomResponse> {
     let decodedRoom: Room;
     try {
-      const { roomCode, username } = payload;
+      const { roomCode, username, avatar } = payload;
 
       const room = await this.redisService.getRoomByKey(roomCode);
 
@@ -159,10 +160,11 @@ export class GameGateway
         username,
         roomCode,
         room,
+        avatar,
         socketId: client.id,
       });
 
-      client.in(roomCode).emit('join-player', { username });
+      client.in(roomCode).emit('join-player', { username, avatar });
 
       client.join(roomCode);
 
@@ -224,15 +226,16 @@ export class GameGateway
 
       const isRoomCreator = decodedRoom.roomCreator === username;
 
-      const usernamePlayers = decodedRoom.players.map((p) => ({
+      const players = decodedRoom.players.map((p) => ({
         username: p.username,
+        avatar: p.avatar,
       }));
 
       return handleSocketResponse({
         message: 'ok',
         data: {
           isRoomCreator,
-          players: usernamePlayers,
+          players,
         },
       });
     } catch (error) {
@@ -323,6 +326,7 @@ export class GameGateway
   ): Promise<StartGameResponse> {
     let decodedRoom: Room;
     try {
+      this.logger.debug('*** START GAME ***');
       const { roomCode, roomConfig } = payload;
 
       const room = await this.redisService.getRoomByKey(roomCode);
@@ -363,7 +367,6 @@ export class GameGateway
         players: players.length,
         cardsPerPlayer: 7,
       });
-
       // load cards to judge
 
       const mainCardIsMeme = roomConfig.gameMode === 'mm';
@@ -378,6 +381,13 @@ export class GameGateway
       const memes = await this.memeService.getRandomBySize(
         numberOfMemesToBeSearched,
       );
+
+      if (memes.length === 0) {
+        return handleSocketResponse({
+          message: messages.error.not_enough_cards_to_play,
+          error: true,
+        });
+      }
 
       // load card to players
       const phrases = await this.phraseToAnswerService.getRandomBySize(
@@ -494,6 +504,7 @@ export class GameGateway
       const players = decodedRoom.players.map((player) => ({
         username: player.username,
         numberOfWins: player.numberOfWins,
+        avatar: player.avatar,
       }));
 
       const judge = {

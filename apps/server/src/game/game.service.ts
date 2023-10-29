@@ -16,7 +16,12 @@ export class GameService {
     return await this.redisClient.get(key);
   }
 
-  async createRoom({ roomCode, username, socketId }: CreateRoomServiceProps) {
+  async createRoom({
+    roomCode,
+    username,
+    avatar,
+    socketId,
+  }: CreateRoomServiceProps) {
     const room: Room = {
       roomCreator: username,
       config: {
@@ -41,6 +46,7 @@ export class GameService {
           numberOfWins: 0,
           cards: [],
           socketId,
+          avatar,
         },
       ],
       isStarted: false,
@@ -50,7 +56,13 @@ export class GameService {
     await this.redisClient.set(roomCode, JSON.stringify(room));
   }
 
-  async joinRoom({ roomCode, username, room, socketId }: JoinRoomServiceProps) {
+  async joinRoom({
+    roomCode,
+    username,
+    room,
+    socketId,
+    avatar,
+  }: JoinRoomServiceProps) {
     const jsonRoom = JSON.parse(room);
 
     await this.redisClient.set(
@@ -64,6 +76,7 @@ export class GameService {
             numberOfWins: 0,
             cards: [],
             socketId,
+            avatar,
           },
         ],
       }),

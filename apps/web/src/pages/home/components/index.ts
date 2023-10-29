@@ -1,2 +1,4 @@
-export * from "./CreateRoom";
-export * from "./JoinRoom";
+import { PlayerForm } from "./PlayerForm";
+import { SelectAvatar } from "./SelectAvatar";
+
+export { PlayerForm, SelectAvatar };

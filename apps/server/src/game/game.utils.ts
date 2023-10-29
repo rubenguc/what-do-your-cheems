@@ -83,7 +83,7 @@ export const fillCards = ({
     };
   }
 
-  while (cards.length < totalPlayersCards) {
+  while (cards.length === 0 || cards.length < totalPlayersCards) {
     const missingCards = totalPlayersCards - cards.length;
     const amountToFill =
       cards.length > missingCards ? missingCards : cards.length;

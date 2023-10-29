@@ -1,6 +1,7 @@
 interface CommonPayload {
   username: string;
   roomCode: string;
+  avatar?: number;
 }
 
 interface CommonResponse {
@@ -33,6 +34,7 @@ export interface ReceiveCard {
 
 export interface Player {
   username: string;
+  avatar: number;
   numberOfWins: number;
   cards: Card[];
   socketId: string;
@@ -63,11 +65,13 @@ export interface RoomJudge {
 }
 export interface WaitRoomPlayer {
   username: string;
+  avatar: number;
 }
 
 export interface RoomPlayer {
   username: string;
   numberOfWins: number;
+  avatar: string;
 }
 
 // Socket interfaces

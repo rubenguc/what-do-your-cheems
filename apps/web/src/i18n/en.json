@@ -1,7 +1,7 @@
 {
   "home": {
-    "create_tab": "Create",
-    "join_tab": "Join",
+    "create_game": "Create game",
+    "join_game": "Join game",
     "upload_memes_phrases": "Upload your own memes and phrases",
     "give_me_a_star": "Give me a star",
     "create_room": "Create Room",
@@ -61,6 +61,7 @@
     "at_least_three_players_to_start_game": "At least three players are required to start",
     "invalid_card": "Invalid Card",
     "you_already_played": "You already played",
-    "your_are_not_room_creator": "You are not the room creator"
+    "your_are_not_room_creator": "You are not the room creator",
+    "not_enough_cards_to_play": "Not enough cards to play"
   }
 }

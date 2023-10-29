@@ -16,11 +16,8 @@ const messages = {
     invalid_card: "invalid_card",
     you_already_played: "you_already_played",
     you_are_not_room_creator: "your_are_not_room_creator",
+    not_enough_cards_to_play: "not_enough_cards_to_play",
   },
 };
-
-// module.exports = {
-//   messages,
-// };
 
 export { messages };

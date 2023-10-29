@@ -19,6 +19,7 @@ import {
 import { useSocketContext } from "./useSocketContext";
 import { useUserContext } from "./useUserContext";
 import { useTranslation } from "react-i18next";
+import { PATHS } from "wdyc-utils";
 
 interface useRoomProps {
   navigate: (route: string) => void;
@@ -74,7 +75,7 @@ export const useRoom = ({
       card,
     };
 
-    const socketMethod = isJudge ? "set-winner-card" : "set-card";
+    const socketMethod = isJudge ? PATHS.SET_WINNER_CARD : PATHS.SET_CARD;
 
     socket?.emit(
       socketMethod,
@@ -121,7 +122,7 @@ export const useRoom = ({
     };
 
     socket?.emit(
-      "creator-finish-game",
+      PATHS.CREATOR_FINISH_GAME,
       data,
       (resp: CreatorFinishGameResponse) => {
         if (resp.error) onShowError(resp.message);
@@ -131,7 +132,7 @@ export const useRoom = ({
 
   useEffect(() => {
     if (!user.roomCode) return;
-    socket?.emit("get-room-info", user, (resp: GetRoomInfoResponse) => {
+    socket?.emit(PATHS.GET_ROOM_INFO, user, (resp: GetRoomInfoResponse) => {
       const {
         cardsToSelect,
         judge,

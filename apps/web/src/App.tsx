@@ -1,7 +1,6 @@
+import { useEffect } from "react";
 import { useSocketContext, useUserContext } from "wdyc-shared-ui/hooks";
 import { ConnectionInfo } from "./components/layout"
-import { useEffect } from "react";
-import { Spinner } from "@chakra-ui/react";
 import Routes from "./Routes";
 import { Toaster } from 'react-hot-toast';
 import { ReconnectResponse, User } from 'wdyc-interfaces';
@@ -48,7 +47,7 @@ function App() {
   return (
     <>
       <ConnectionInfo isSocketOnline={isSocketOnline} />
-      {!user.isInit ? <Spinner /> : <Routes />}
+      {!user.isInit ? <p /> : <Routes />}
       <Toaster />
     </>
   )

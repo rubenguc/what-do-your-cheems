@@ -1,27 +1,15 @@
-import { FC, useRef, useState, useMemo } from 'react';
-import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  Button,
-  HStack,
-  Image,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
-import { Card as ICard, Player } from 'wdyc-interfaces';
-import { useTranslation } from 'react-i18next';
-import { Card } from '../../../components/common';
+import { FC, useState, useMemo } from "react";
+import { Card as ICard, Player } from "wdyc-interfaces";
+import { Card, } from "../../../components/common";
+import { useModal } from "../../../hooks/common";
+import { ConfirmCard } from "./ConfirmCard";
 
 interface CardProps {
   cards: ICard[];
   setCard: (card: ICard) => void;
   waitingForJudge: boolean;
   isJudge: boolean;
-  playerCards: Player['cards'];
+  playerCards: Player["cards"];
 }
 
 export const Cards: FC<CardProps> = ({
@@ -31,21 +19,19 @@ export const Cards: FC<CardProps> = ({
   playerCards,
   isJudge,
 }) => {
-  const { t } = useTranslation('room');
   const [selectCard, setselectCard] = useState<ICard | null>(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef(null);
+  const { isOpenModal, onOpenModal, onCloseModal } = useModal();
 
   const onSelectCard = (card: ICard) => {
     if (cards.length < 7) return;
     if (!isJudge && waitingForJudge) return;
     setselectCard(card);
-    onOpen();
+    onOpenModal();
   };
 
   const closeModal = () => {
     setselectCard(null);
-    onClose();
+    onCloseModal();
   };
 
   const confirmCard = () => {
@@ -61,71 +47,18 @@ export const Cards: FC<CardProps> = ({
 
   return (
     <>
-      <HStack
-        overflowX="auto"
-        py={5}
-        overflowY="hidden"
-        gap={5}
-        px={3}
-        justifyContent={{
-          base: 'none',
-          lg: 'center',
-        }}
-        mb={2}
-        __css={{
-          '&::-webkit-scrollbar': {
-            width: '2px',
-          },
-          '&::-webkit-scrollbar-track': {
-            width: '2px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            background: '#ddda',
-            borderRadius: '24px',
-          },
-        }}
-      >
+      <div className="flex gap-5 overflow-auto py-5 overflow-y-hidden mb-2">
         {cardsToSelect.map((card, index) => (
           <Card key={index.toString()} card={card} onSelect={onSelectCard} />
         ))}
-      </HStack>
+      </div>
 
-      {/* TODO: move to separate component */}
-      <AlertDialog
-        motionPreset="slideInBottom"
-        leastDestructiveRef={cancelRef}
+      <ConfirmCard
+        card={selectCard}
+        isOpen={isOpenModal}
         onClose={closeModal}
-        isOpen={isOpen}
-        isCentered
-      >
-        <AlertDialogOverlay />
-        <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            {t('selected_card')}:
-          </AlertDialogHeader>
-          <AlertDialogBody>
-            {selectCard?.type === 'PHRASE' && <Text>{selectCard.content}</Text>}
-
-            {selectCard?.type === 'MEME' && (
-              <Image
-                src={selectCard.url}
-                width="200px"
-                height="200px"
-                objectFit="contain"
-                mx="auto"
-              />
-            )}
-          </AlertDialogBody>
-          <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={closeModal}>
-              {t('cancel')}
-            </Button>
-            <Button colorScheme="red" ml={3} onClick={confirmCard}>
-              {t('send')}
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onConfirm={confirmCard}
+      />
     </>
   );
 };

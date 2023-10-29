@@ -8,7 +8,7 @@ import {
 } from "wdyc-interfaces";
 import { useSocketContext } from "./useSocketContext";
 import { useUserContext } from "./useUserContext";
-import { GAME_MODES } from "wdyc-utils";
+import { GAME_MODES, PATHS } from "wdyc-utils";
 
 interface useWaitingRoomProps {
   navigate: (route: string) => void;
@@ -58,7 +58,7 @@ export const useWaitingRoom = ({
   useEffect(() => {
     isSocketOnline &&
       socket?.on("join-player", (res: WaitRoomPlayer) => {
-        setPlayers((state) => [...state, { username: res.username }]);
+        setPlayers((state) => [...state, res]);
       });
 
     return () => {
@@ -107,7 +107,7 @@ export const useWaitingRoom = ({
 
     if (isSocketOnline) {
       setIsLoading(true);
-      socket?.emit("start-game", data, (res: StartGameResponse) => {
+      socket?.emit(PATHS.START_GAME, data, (res: StartGameResponse) => {
         if (res.error) {
           onShowError(res.message);
           setIsLoading(false);
@@ -126,7 +126,7 @@ export const useWaitingRoom = ({
   const leaveRoom = () => {
     if (isSocketOnline) {
       setIsLoading(true);
-      socket?.emit("leave-room", user, (res: LeaveRoomResponse) => {
+      socket?.emit(PATHS.LEAVE_ROOM, user, (res: LeaveRoomResponse) => {
         if (res.error) {
           setIsLoading(false);
           return onShowError(res.message);
@@ -139,7 +139,7 @@ export const useWaitingRoom = ({
   const closeRoom = () => {
     if (isSocketOnline) {
       setIsLoading(true);
-      socket?.emit("close-room", user, (res: LeaveRoomResponse) => {
+      socket?.emit(PATHS.CLOSE_ROOM, user, (res: LeaveRoomResponse) => {
         if (res.error) {
           setIsLoading(false);
           return onShowError(res.message);

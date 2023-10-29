@@ -1,20 +1,11 @@
-import { FC } from 'react';
-import { Box, Text } from '@chakra-ui/react';
+import { FC } from "react";
 import {
   Card as ICard,
   MemeCard as IMemeCard,
   PhraseCard as IPhraseCard,
-} from 'wdyc-interfaces';
+} from "wdyc-interfaces";
 
-const COMMON_CARD_PROPS = {
-  borderRadius: '2xl',
-  bgColor: 'black',
-  p: '2',
-  shadow: 'base',
-  borderWidth: '2px',
-  borderColor: 'black',
-  minW: '40',
-};
+const COMMON_CARD_PROPS = "rounded-xl p-2 shadow-base border-1 min-w-[160px]";
 
 interface PhraseCardProps {
   card: IPhraseCard;
@@ -28,61 +19,49 @@ interface MemeCardProps {
 }
 
 const MemeCard: FC<MemeCardProps> = ({ card, onSelect, isInJudgePosition }) => {
-  const isHorizontal = card.imageOrientation === 'H';
+  const isHorizontal = card.imageOrientation === "H";
 
   const rotate = isHorizontal && isInJudgePosition;
 
+  const minWidth = rotate ? "300px" : "200px";
+  const maxWidth = rotate ? "300px" : "200px";
+  const minHeight = rotate ? "200px" : "300px";
+  const maxHeight = rotate ? "200px" : "300px";
+
   return (
-    <Box
-      {...COMMON_CARD_PROPS}
-      w="100%"
-      h="100%"
-      mx="auto"
-      minW={rotate ? '300px' : '200px'}
-      maxW={rotate ? '300px' : '200px'}
-      minH={rotate ? '200px' : '300px'}
-      maxH={rotate ? '200px' : '300px'}
-      borderColor="#444"
-      position="relative"
-      overflow="hidden"
+    <div
+      className={`${COMMON_CARD_PROPS} mx-auto border border-[#444] relative overflow-hidden`}
       onClick={() => onSelect?.(card)}
+      style={{
+        minHeight,
+        maxHeight,
+        minWidth,
+        maxWidth
+      }}
     >
-      <Box
-        position="absolute"
-        top={0}
-        left={0}
-        bgImage={card.url}
-        bgSize={'cover'}
-        bgRepeat={'no-repeat'}
-        bgPosition={'center'}
-        bgColor="transparent"
-        minW={isHorizontal ? '300px' : '200px'}
-        maxW={isHorizontal ? '300px' : '200px'}
-        minH={isHorizontal ? '200px' : '300px'}
-        maxH={isHorizontal ? '200px' : '300px'}
-        transform={
-          !rotate && isHorizontal ? 'rotate(-90deg) translate(-16%, -26%)' : ''
-        }
+      <div className={`absolute top-0 left-0 bg-cover bg-no-repeat bg-transparent transform ${rotate ? 'rotate(-90deg) translate(-16%, -26%)' : ''}`}
+        style={{
+          backgroundImage: `url(${card.url})`,
+          minHeight,
+          maxHeight,
+          minWidth,
+          maxWidth
+        }}
       />
-    </Box>
+
+
+    </div>
   );
 };
 
 const PhraseCard: FC<PhraseCardProps> = ({ card, onSelect }) => {
   return (
-    <Box
-      {...COMMON_CARD_PROPS}
-      width="full"
-      maxW="40"
-      borderColor="black"
-      h="56"
-      bgColor="blue.700"
+    <div
+      className={`${COMMON_CARD_PROPS} border border-white w-full max-w-[160px] h-56  bg-blue-800`}
       onClick={() => onSelect?.(card)}
     >
-      <Text color="white" fontWeight="bold">
-        {card.content}
-      </Text>
-    </Box>
+      <p className="font-bold select-none text-sm">{card.content}</p>
+    </div>
   );
 };
 
@@ -99,7 +78,7 @@ export const Card: FC<CardProps> = ({
 }) => {
   return (
     <>
-      {card.type === 'MEME' && (
+      {card.type === "MEME" && (
         <MemeCard
           card={card}
           onSelect={onSelect}
@@ -107,7 +86,7 @@ export const Card: FC<CardProps> = ({
         />
       )}
 
-      {card.type === 'PHRASE' && <PhraseCard card={card} onSelect={onSelect} />}
+      {card.type === "PHRASE" && <PhraseCard card={card} onSelect={onSelect} />}
     </>
   );
 };
