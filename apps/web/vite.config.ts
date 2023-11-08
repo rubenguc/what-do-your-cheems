@@ -11,6 +11,6 @@ export default defineConfig({
     host: true,
   },
   optimizeDeps: {
-    include: ["react/jsx-runtime"],
+    include: ["react/jsx-runtime", "react", "react-dom"],
   },
 });
