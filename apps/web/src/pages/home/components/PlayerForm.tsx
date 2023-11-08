@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { FaChevronLeft } from "react-icons/fa";
 import { SelectAvatar } from ".";
+import { Button, Input } from "../../../components/ui";
 
 interface Form {
   username: string;
@@ -69,54 +70,37 @@ export const PlayerForm: FC<PlayerFormProps> = ({
               onChangeAvatar={onChangeAvatar}
             />
 
-            <div>
-              <label
-                htmlFor="username"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                First name
-              </label>
-              <input
-                type="text"
-                id="username"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required
-                value={form.username}
-                onChange={({ target }) =>
-                  onChangeForm("username", target.value)
-                }
-              />
-            </div>
+            <Input
+              id="username"
+              label={t("username_placeholder")}
+              value={form.username}
+              onChange={(value) =>
+                onChangeForm("username", value)
+              }
+            />
+
 
             {selectedOption === "join_game" && (
-              <div>
-                <label
-                  htmlFor="roomCode"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  roomCode
-                </label>
-                <input
-                  type="text"
-                  id="roomCode"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required
-                  value={form.roomCode}
-                  onChange={({ target }) =>
-                    onChangeForm("roomCode", target.value)
-                  }
-                />
-              </div>
+              <Input
+                id="roomCode"
+                label={t("room_code_placeholder")}
+                value={form.roomCode}
+                onChange={(value) =>
+                  onChangeForm("roomCode", value)
+                }
+              />
+
             )}
           </div>
 
-          <button
-            type="button"
+          <Button
+            className="w-full mt-10"
             onClick={onSubmit}
-            className="mt-10 w-full text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             {t(selectedOption)}
-          </button>
+          </Button>
+
+
         </div>
       </motion.div>
     </AnimatePresence>

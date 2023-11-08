@@ -1,6 +1,8 @@
 import { FC, PropsWithChildren } from "react";
+import { motion } from 'framer-motion';
 
 interface ButtonProps extends PropsWithChildren {
+  className?: string;
   isDisabled?: boolean;
   isLoading?: boolean;
   onClick: () => void;
@@ -8,17 +10,19 @@ interface ButtonProps extends PropsWithChildren {
 
 export const Button: FC<ButtonProps> = ({
   children,
+  className = "",
   isDisabled = false,
   isLoading = false,
   onClick,
 }) => {
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.9 }}
       disabled={isDisabled || isLoading}
       type="button"
       onClick={onClick}
-      className="text-white justify-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center"
-    >
+      className={`tracking-wide text-xl focus:outline-none font-extrabold rounded-xl px-5 py-2.5 inline-flex items-center justify-center bg-blue-800 text-white hover:bg-indigo-500 ${className}`}>
       {isLoading && (
         <svg
           aria-hidden="true"
@@ -40,6 +44,6 @@ export const Button: FC<ButtonProps> = ({
       )}
 
       {children}
-    </button>
+    </motion.button>
   );
 };

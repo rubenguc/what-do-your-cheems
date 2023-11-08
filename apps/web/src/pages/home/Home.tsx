@@ -6,7 +6,8 @@ import { useHome, useUserContext } from "wdyc-shared-ui/hooks";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../hooks/common";
 import { LoginProps } from "wdyc-interfaces";
-import { MenuContainer } from '../../components/common/MenuContainer';
+import { MenuContainer } from "../../components/common/MenuContainer";
+import { Button } from "../../components/ui";
 
 const GITHUB_LINK = import.meta.env.VITE_GITHUB_LINK;
 const TELEGRAM_LINK = import.meta.env.VITE_TELEGRAM_LINK;
@@ -31,25 +32,27 @@ export const Home = () => {
   const navigate = useNavigate();
   const { login } = useUserContext();
 
-
   const onLogin = (data: any) => {
     if (!data) return;
-    localStorage.setItem('user', JSON.stringify(data));
+    localStorage.setItem("user", JSON.stringify(data));
     login(data as LoginProps);
   };
 
-
-  const { selectedOption, setSelectedOption, onChangeForm, loginForm, createRoom, joinRoom } =
-    useHome({
-      navigate,
-      onShowError: showErrorToast,
-      onLogin,
-    });
-
-
+  const {
+    selectedOption,
+    setSelectedOption,
+    onChangeForm,
+    loginForm,
+    createRoom,
+    joinRoom,
+  } = useHome({
+    navigate,
+    onShowError: showErrorToast,
+    onLogin,
+  });
 
   return (
-    <div className="flex flex-col items-center h-full justify-center">
+    <div className="flex flex-col items-center h-full justify-center px-1">
       <div className="flex justify-center min-h-[166px] gap-3 -mt-32">
         <AnimatePresence>
           <motion.img
@@ -85,16 +88,9 @@ export const Home = () => {
           <MenuContainer>
             <div className="flex flex-col gap-4">
               {OPTIONS.map((option, index) => (
-                <motion.button
-                  key={index}
-                  type="button"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => setSelectedOption(option)}
-                  className="tracking-wide text-xl focus:outline-none font-extrabold rounded-xl px-5 py-2.5 inline-flex items-center justify-center bg-indigo-600 text-white hover:bg-indigo-500"
-                >
+                <Button key={index} onClick={() => setSelectedOption(option)}>
                   {t(option)}
-                </motion.button>
+                </Button>
               ))}
             </div>
             <div className="flex flex-col mt-10 gap-4">
@@ -119,7 +115,9 @@ export const Home = () => {
           form={loginForm}
           selectedOption={selectedOption}
           onBack={() => setSelectedOption(null)}
-          onSubmit={() => selectedOption === "create_game" ? createRoom() : joinRoom()}
+          onSubmit={() =>
+            selectedOption === "create_game" ? createRoom() : joinRoom()
+          }
         />
       )}
     </div>
