@@ -10,9 +10,7 @@ export default defineConfig({
     port: 4200,
     host: true,
   },
-  build: {
-    rollupOptions: {
-      external: ["wdyc-shared-ui", "wdyc-utils"],
-    },
+  optimizeDeps: {
+    include: ["react/jsx-runtime"],
   },
 });
