@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { LoginState, User } from "../wdyc-interfaces/interfaces";
+import { LoginState, User } from "wdyc-interfaces";
 
 export interface GlobalState {
   user: User;

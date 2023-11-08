@@ -1,4 +1,4 @@
-import React, { createContext, FC, PropsWithChildren } from 'react';
+import { createContext, FC, PropsWithChildren } from 'react';
 import useStore, { GlobalState } from '../store';
 import { LoginProps } from '../../wdyc-interfaces/interfaces';
 
