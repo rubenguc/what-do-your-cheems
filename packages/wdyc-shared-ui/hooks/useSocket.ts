@@ -1,9 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
-import { io } from 'socket.io-client';
+import { useEffect, useMemo, useState } from "react";
+import { Socket, io } from "socket.io-client";
 
+// @ts-ignore
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
-export const useSocket = () => {
+type UseSocketReturnType = {
+  socket: Socket | undefined;
+  isSocketOnline: boolean;
+};
+
+export const useSocket = (): UseSocketReturnType => {
   const socket = useMemo(() => io(SOCKET_URL), []);
   const [isSocketOnline, setIsSocketOnline] = useState(false);
 
@@ -12,13 +18,13 @@ export const useSocket = () => {
   }, [socket]);
 
   useEffect(() => {
-    socket.on('connect', () => {
+    socket.on("connect", () => {
       setIsSocketOnline(true);
     });
   }, [socket]);
 
   useEffect(() => {
-    socket.on('disconnect', () => {
+    socket.on("disconnect", () => {
       setIsSocketOnline(false);
     });
   }, [socket]);

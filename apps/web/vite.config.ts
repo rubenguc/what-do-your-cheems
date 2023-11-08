@@ -10,7 +10,4 @@ export default defineConfig({
     port: 4200,
     host: true,
   },
-  optimizeDeps: {
-    include: ["react/jsx-runtime", "react", "react-dom"],
-  },
 });

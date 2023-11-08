@@ -2,8 +2,8 @@ import { createContext, FC, PropsWithChildren } from 'react';
 import { Socket } from 'socket.io-client';
 import { useSocket } from '../hooks';
 
-interface ISocketContext {
-  socket: Socket | null;
+export interface ISocketContext {
+  socket: Socket | undefined;
   isSocketOnline: boolean;
 }
 
