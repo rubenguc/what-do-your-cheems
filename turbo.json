@@ -3,16 +3,51 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "lint": {},
+    "web#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "env": ["VITE_SOCKET_URL", "VITE_GITHUB_LINK", "VITE_TELEGRAM_LINK"]
+    },
+    "server#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "env": [
+        "NODE_ENV",
+        "PORT",
+        "LOG_NAME",
+        "LOG_LEVEL",
+        "DB_URI",
+        "DB_NAME",
+        "REDIS_HOST",
+        "REDIS_PORT",
+        "REDIS_DB",
+        "REDIS_PASSWORD",
+        "PROJECT_ID",
+        "STORAGE_TYPE",
+        "STORAGE_TOKEN_URL",
+        "STORAGE_CLIENT_EMAIL",
+        "STORAGE_CLIENT_ID",
+        "STORAGE_PRIVATE_KEY",
+        "BUCKET",
+        "SENTRY_DSN"
+      ]
+    },
+
     "dev": {
       "cache": false,
       "dotEnv": [".env"]
     },
+
+    "start:prod": {
+      "cache": false,
+      "dotEnv": [".env"],
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+
     "seed": {
       "cache": false
     }

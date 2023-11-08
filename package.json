@@ -10,7 +10,8 @@
     "start:dev": "turbo run start:dev",
     "lint": "turbo run lint",
     "docker:server:dev": "docker compose -f ./docker-compose.server-dev.yaml up -d",
-    "seed": "dotenv -- turbo run seed"
+    "seed": "dotenv -- turbo run seed",
+    "start:prod": "turbo run start:prod"
   },
   "keywords": [],
   "author": "",
