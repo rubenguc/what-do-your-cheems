@@ -1,3 +1,4 @@
+import { Card } from 'wdyc-interfaces';
 import { SocketResponse } from './dto/gateway-dt';
 
 interface SocketResponserProps<T> {
@@ -42,11 +43,12 @@ export const getTotalCardsToPlayers = ({
 export const dataToCards = (
   data: any[],
   origin: 'memes' | 'phrases',
-): any[] => {
+): Card[] => {
   let cards: any[] = [];
 
   if (origin === 'memes') {
     cards = data.map((m) => ({
+      id: m._id,
       type: 'MEME',
       url: m.url,
       imageOrientation: m.imageOrientation,
@@ -55,6 +57,7 @@ export const dataToCards = (
 
   if (origin === 'phrases') {
     cards = data.map((m) => ({
+      id: m._id,
       type: 'PHRASE',
       content: m.phrase,
     }));

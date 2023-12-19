@@ -81,6 +81,10 @@ export class GameGateway
     payload: CreateRoomPayload,
   ): Promise<CreateRoomResponse> {
     try {
+      this.logger.debug({
+        socket: PATHS.CREATE_ROOM,
+        payload,
+      });
       const { username, avatar } = payload;
 
       const nanoid = customAlphabet('1234567890', 6);
@@ -93,7 +97,7 @@ export class GameGateway
         socketId: client.id,
       });
 
-      client.join(roomCode);
+      await client.join(roomCode);
 
       return handleSocketResponse({
         data: {
@@ -102,7 +106,10 @@ export class GameGateway
         },
       });
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error({
+        socket: PATHS.CREATE_ROOM,
+        error,
+      });
       this.sentry.instance().captureException(error, (scope) => {
         scope.setExtras({
           path: PATHS.CREATE_ROOM,
@@ -125,6 +132,10 @@ export class GameGateway
   ): Promise<JoinRoomResponse> {
     let decodedRoom: Room;
     try {
+      this.logger.debug({
+        socket: PATHS.JOIN_ROOM,
+        payload,
+      });
       const { roomCode, username, avatar } = payload;
 
       const room = await this.redisService.getRoomByKey(roomCode);
@@ -166,7 +177,7 @@ export class GameGateway
 
       client.in(roomCode).emit('join-player', { username, avatar });
 
-      client.join(roomCode);
+      await client.join(roomCode);
 
       return handleSocketResponse({
         message: 'ok',
@@ -176,7 +187,10 @@ export class GameGateway
         },
       });
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error({
+        socket: PATHS.JOIN_ROOM,
+        error,
+      });
       this.sentry.instance().captureException(error, (scope) => {
         scope.setExtras({
           path: PATHS.JOIN_ROOM,
@@ -200,6 +214,11 @@ export class GameGateway
   ): Promise<GetRoomPlayersResponse> {
     let decodedRoom: Room;
     try {
+      this.logger.debug({
+        socket: PATHS.GET_WAITING_ROOM_INFO,
+        payload,
+      });
+
       const { roomCode, username } = payload;
 
       const room = await this.redisService.getRoomByKey(roomCode);
@@ -239,7 +258,10 @@ export class GameGateway
         },
       });
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error({
+        socket: PATHS.GET_WAITING_ROOM_INFO,
+        error,
+      });
       this.sentry.instance().captureException(error, (scope) => {
         scope.setExtras({
           path: PATHS.GET_WAITING_ROOM_INFO,
@@ -263,6 +285,11 @@ export class GameGateway
   ): Promise<LeaveRoomResponse> {
     let decodedRoom: Room;
     try {
+      this.logger.debug({
+        socket: PATHS.LEAVE_ROOM,
+        payload,
+      });
+
       const { roomCode, username } = payload;
 
       const room = await this.redisService.getRoomByKey(roomCode);
@@ -302,7 +329,10 @@ export class GameGateway
         message: 'ok',
       });
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error({
+        socket: PATHS.LEAVE_ROOM,
+        error,
+      });
       this.sentry.instance().captureException(error, (scope) => {
         scope.setExtras({
           path: PATHS.LEAVE_ROOM,
@@ -326,7 +356,10 @@ export class GameGateway
   ): Promise<StartGameResponse> {
     let decodedRoom: Room;
     try {
-      this.logger.debug('*** START GAME ***');
+      this.logger.debug({
+        socket: PATHS.START_GAME,
+        payload,
+      });
       const { roomCode, roomConfig } = payload;
 
       const room = await this.redisService.getRoomByKey(roomCode);
@@ -378,11 +411,12 @@ export class GameGateway
         ? totalPlayersCards
         : totalJudgeCards;
 
-      const memes = await this.memeService.getRandomBySize(
-        numberOfMemesToBeSearched,
-      );
+      const [memes, phrases] = await Promise.all([
+        this.memeService.getRandomBySize(numberOfMemesToBeSearched),
+        this.phraseToAnswerService.getRandomBySize(numberOfPhrasesToBeSearched),
+      ]);
 
-      if (memes.length === 0) {
+      if (memes.length === 0 || phrases.length === 0) {
         return handleSocketResponse({
           message: messages.error.not_enough_cards_to_play,
           error: true,
@@ -390,15 +424,12 @@ export class GameGateway
       }
 
       // load card to players
-      const phrases = await this.phraseToAnswerService.getRandomBySize(
-        numberOfPhrasesToBeSearched,
-      );
 
       const memesCards = dataToCards(memes, 'memes');
       const phrasesCards = dataToCards(phrases, 'phrases');
 
-      const judgeCards: Card[] = mainCardIsMeme ? memesCards : phrasesCards;
-      const playerCards: Card[] = !mainCardIsMeme ? memesCards : phrasesCards;
+      const judgeCards = mainCardIsMeme ? memesCards : phrasesCards;
+      const playerCards = !mainCardIsMeme ? memesCards : phrasesCards;
 
       // get random judge
       const randomPlayerIndex = Math.floor(
@@ -453,7 +484,10 @@ export class GameGateway
         data: null,
       });
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error({
+        socket: PATHS.START_GAME,
+        error,
+      });
       this.sentry.instance().captureException(error, (scope) => {
         scope.setExtras({
           path: PATHS.START_GAME,
@@ -477,6 +511,11 @@ export class GameGateway
   ): Promise<GetRoomInfoResponse> {
     let decodedRoom: Room;
     try {
+      this.logger.debug({
+        socket: PATHS.GET_ROOM_INFO,
+        payload,
+      });
+
       const { roomCode, username } = payload;
 
       const room = await this.redisService.getRoomByKey(roomCode);
@@ -539,7 +578,10 @@ export class GameGateway
         },
       });
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error({
+        socket: PATHS.GET_ROOM_INFO,
+        error,
+      });
       this.sentry.instance().captureException(error, (scope) => {
         scope.setExtras({
           path: PATHS.GET_ROOM_INFO,
@@ -563,6 +605,11 @@ export class GameGateway
   ): Promise<SetCardResponse> {
     let decodedRoom: Room;
     try {
+      this.logger.debug({
+        socket: PATHS.SET_CARD,
+        payload,
+      });
+
       const { roomCode, username, card } = payload;
       const room = await this.redisService.getRoomByKey(roomCode);
 
@@ -578,6 +625,7 @@ export class GameGateway
       const userIsJudge = decodedRoom.judge.username === username;
 
       if (userIsJudge) {
+        // Jugde can't set card, only others players can
         return handleSocketResponse({
           message: messages.error.invalid_card,
           error: true,
@@ -589,33 +637,37 @@ export class GameGateway
       );
 
       if (userAlreadyPlay) {
-        return {
+        return handleSocketResponse({
           message: messages.error.you_already_played,
           error: true,
-        };
+        });
       }
 
       const playerIndex = decodedRoom.players.findIndex(
         (p) => p.username === username,
       );
 
-      if (playerIndex > -1) {
-        const cardIndex = decodedRoom.players[playerIndex].cards.findIndex(
-          (c) => {
-            if (c.type === 'MEME') {
-              return c.url === (card as MemeCard).url;
-            }
+      const playerExists = playerIndex > -1;
 
-            if (c.type === 'PHRASE') {
-              return c.content === (card as PhraseCard).content;
-            }
-          },
-        );
-
-        if (cardIndex > -1) {
-          decodedRoom.players[playerIndex].cards.splice(cardIndex, 1);
-        }
+      if (!playerExists) {
+        return handleSocketResponse({
+          message: messages.error.player_not_found,
+          error: true,
+        });
       }
+
+      const cardPlayedIndex = decodedRoom.players[playerIndex].cards.findIndex(
+        (c) => c.id === card.id,
+      );
+
+      if (cardPlayedIndex === -1) {
+        return handleSocketResponse({
+          message: messages.error.invalid_card,
+          error: true,
+        });
+      }
+
+      decodedRoom.players[playerIndex].cards.splice(cardPlayedIndex, 1);
 
       client.broadcast.to(roomCode).emit('player-set-card', username);
 
@@ -656,7 +708,10 @@ export class GameGateway
         },
       });
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error({
+        socket: PATHS.SET_CARD,
+        error,
+      });
       this.sentry.instance().captureException(error, (scope) => {
         scope.setExtras({
           path: PATHS.SET_CARD,
@@ -680,6 +735,11 @@ export class GameGateway
   ): Promise<SetWinnerCardResponse> {
     let decodedRoom: Room;
     try {
+      this.logger.debug({
+        socket: PATHS.SET_WINNER_CARD,
+        payload,
+      });
+
       const { roomCode, username, card } = payload;
       const room = await this.redisService.getRoomByKey(roomCode);
 
@@ -702,13 +762,31 @@ export class GameGateway
       }
 
       // TODO: card MUSTN'T contain username, maybe a token?
-      const winnerPlayer = (card as any).username;
+      // const winnerPlayer = (card as any).username;
 
-      const winnerPlayerIndex = decodedRoom.players.findIndex(
-        (p) => p.username === (card as any).username,
+      // const winnerPlayerIndex = decodedRoom.players.findIndex(
+      //   (p) => p.username === (card as any).username,
+      // );
+
+      const winnerCardIndex = decodedRoom.judge.receivedCards.findIndex(
+        (c) => c.card.id === card.id,
       );
 
+      if (winnerCardIndex === -1) {
+        return handleSocketResponse({
+          message: messages.error.invalid_card,
+          error: true,
+        });
+      }
+
+      const winnerPlayer =
+        decodedRoom.judge.receivedCards[winnerCardIndex].username;
+
       this.server.to(roomCode).emit('winner-card', winnerPlayer);
+
+      const winnerPlayerIndex = decodedRoom.players.findIndex(
+        (p) => p.username === winnerPlayer,
+      );
 
       decodedRoom.players[winnerPlayerIndex].numberOfWins += 1;
       decodedRoom.round += 1;
@@ -839,7 +917,10 @@ export class GameGateway
         message: 'ok',
       });
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error({
+        socket: PATHS.SET_WINNER_CARD,
+        error,
+      });
       this.sentry.instance().captureException(error, (scope) => {
         scope.setExtras({
           path: PATHS.SET_WINNER_CARD,
@@ -863,6 +944,11 @@ export class GameGateway
   ): Promise<CreatorFinishGameResponse> {
     let decodedRoom: Room;
     try {
+      this.logger.debug({
+        socket: PATHS.CREATOR_FINISH_GAME,
+        payload,
+      });
+
       const { roomCode, username } = payload;
       const room = await this.redisService.getRoomByKey(roomCode);
 
@@ -892,7 +978,10 @@ export class GameGateway
         message: 'ok',
       });
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error({
+        socket: PATHS.CREATOR_FINISH_GAME,
+        error,
+      });
       this.sentry.instance().captureException(error, (scope) => {
         scope.setExtras({
           path: PATHS.CREATOR_FINISH_GAME,
@@ -916,6 +1005,11 @@ export class GameGateway
   ): Promise<closeRoomResponse> {
     let decodedRoom: Room;
     try {
+      this.logger.debug({
+        socket: PATHS.CLOSE_ROOM,
+        payload,
+      });
+
       const { roomCode, username } = payload;
       const room = await this.redisService.getRoomByKey(roomCode);
 
@@ -945,7 +1039,10 @@ export class GameGateway
         message: 'ok',
       });
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error({
+        socket: PATHS.CLOSE_ROOM,
+        error,
+      });
       this.sentry.instance().captureException(error, (scope) => {
         scope.setExtras({
           path: PATHS.CLOSE_ROOM,
@@ -969,6 +1066,10 @@ export class GameGateway
   ): Promise<ReconnectResponse> {
     let decodedRoom: Room;
     try {
+      this.logger.debug({
+        socket: PATHS.RECONNECT,
+        payload,
+      });
       const { username, roomCode } = payload;
 
       const room = await this.redisService.getRoomByKey(roomCode);
@@ -1004,7 +1105,7 @@ export class GameGateway
         roomCode,
         room: decodedRoom,
       });
-      client.join(roomCode);
+      await client.join(roomCode);
 
       return handleSocketResponse({
         message: 'ok',
@@ -1015,7 +1116,10 @@ export class GameGateway
         },
       });
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error({
+        socket: PATHS.RECONNECT,
+        error,
+      });
       this.sentry.instance().captureException(error, (scope) => {
         scope.setExtras({
           path: PATHS.RECONNECT,

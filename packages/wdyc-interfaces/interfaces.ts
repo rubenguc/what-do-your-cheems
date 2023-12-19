@@ -14,12 +14,17 @@ export interface RoomConfig {
   gameMode: string;
 }
 
-export interface PhraseCard {
+interface CardBase {
+  id: string;
+  type: "MEME" | "PHRASE";
+}
+
+export interface PhraseCard extends CardBase {
   type: "PHRASE";
   content: string;
 }
 
-export interface MemeCard {
+export interface MemeCard extends CardBase {
   type: "MEME";
   url: string;
   imageOrientation: string;
@@ -186,7 +191,7 @@ export enum Adapater {
   R = "React",
 }
 
-export type OnShowMessageIcon = 'success' | 'loading' | 'winner'
+export type OnShowMessageIcon = "success" | "loading" | "winner";
 
 export interface OnShowMessage {
   message: string;
