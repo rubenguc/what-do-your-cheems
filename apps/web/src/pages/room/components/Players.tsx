@@ -1,19 +1,35 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import { FaGavel } from "react-icons/fa";
 import { AVATARS } from "../../../constants/players";
+import { Player } from "wdyc-interfaces";
+import { useUserContext } from "wdyc-shared-ui/hooks";
 
 interface PlayersProps {
-  players: { username: string; numberOfWins: number }[];
+  players: Player[];
   judgeUsername: string;
 }
 
 export const Players: FC<PlayersProps> = ({ players, judgeUsername }) => {
+  const { user } = useUserContext();
+
+  const sortedPlayers = useMemo(() => {
+    // user.username must be the first player
+    const sortedPlayers = [...players];
+    const userIndex = players.findIndex((player) => player.username === user.username);
+
+    if (userIndex !== -1) {
+      sortedPlayers.splice(userIndex, 1);
+      sortedPlayers.unshift(players[userIndex]);
+    }
+
+    return sortedPlayers;
+  }, [players, user])
 
   return (
     <div
       className="flex flex-row overflow-x-auto py-1 gap-5 px-3 justify-center"
     >
-      {players.map((player, index) => (
+      {sortedPlayers.map((player, index) => (
         <div key={index.toString()} className="relative">
           <div className="flex relative border-2 border-white rounded-full overflow-visible">
             <img src={AVATARS[player.avatar]} alt="" className="w-10 h-10 rounded-full" />

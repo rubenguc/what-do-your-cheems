@@ -1,4 +1,8 @@
 {
+  "common": {
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
   "home": {
     "create_game": "Create game",
     "join_game": "Join game",

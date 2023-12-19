@@ -1,4 +1,8 @@
 {
+  "common": {
+    "confirm": "Confirmar",
+    "cancel": "Cancelar"
+  },
   "home": {
     "create_game": "Crear partida",
     "join_game": "Unirse a partida",
