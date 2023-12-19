@@ -15,6 +15,7 @@ import {
   ReceiveCard,
   Judge,
   Player,
+  OnShowMessage,
 } from "wdyc-interfaces";
 import { useSocketContext } from "./useSocketContext";
 import { useUserContext } from "./useUserContext";
@@ -24,7 +25,7 @@ import { PATHS } from "wdyc-utils";
 interface useRoomProps {
   navigate: (route: string) => void;
   onShowError: (message: string) => void;
-  onShowMessage: (message: string, persistent?: boolean, id?: string) => void;
+  onShowMessage: (props: OnShowMessage) => void;
   onClear: () => void;
   onCloseAllToasts: () => void;
 }
@@ -99,16 +100,21 @@ export const useRoom = ({
 
           if (socketMethod === "set-card") {
             onShowMessage(
-              resp.data?.isRoundOver
-                ? t("waiting_for_judge")
-                : t("waiting_for_players"),
-              true
+              {
+                message: resp.data?.isRoundOver
+                  ? t("waiting_for_judge")
+                  : t("waiting_for_players"),
+                persistent: true,
+                icon: 'loading'
+              },
             );
           }
         }
       }
     );
   };
+
+
 
   const goToHome = useCallback(() => {
     onClear();
@@ -167,16 +173,27 @@ export const useRoom = ({
           username: c.username,
         })) || []
       );
+
+      // for the first time, if the judge is the user, show message
+      const isJudge = judge.username === user.username;
+      isJudge && onShowMessage({
+        message: t("waiting_for_players"),
+        icon: 'loading',
+        persistent: true,
+      })
+
+
       setWaitingForJudge(waitingForJudge || cardsToSelect.length < 7);
       if (waitingForJudge || cardsToSelect.length < 7) {
         if (waitingForJudge && user.username === judge.username) {
-          return onShowMessage(t("select_the_winner_card"), true);
+          return onShowMessage({ message: t("select_the_winner_card"), persistent: true, icon: 'loading' });
         }
 
-        onShowMessage(
-          waitingForJudge ? t("waiting_for_judge") : t("waiting_for_judge"),
-          true
-        );
+        onShowMessage({
+          message: waitingForJudge ? t("waiting_for_judge") : t("waiting_for_players"),
+          persistent: true,
+          icon: 'loading'
+        });
       }
 
       setGame((state: any) => ({
@@ -221,9 +238,9 @@ export const useRoom = ({
     socket?.on("all-players-ready", () => {
       setWaitingForJudge(true);
       if (isJudge) {
-        return onShowMessage(t("select_the_winner_card"), true);
+        return onShowMessage({ message: t("select_the_winner_card"), persistent: true, icon: 'loading' });
       }
-      onShowMessage(t("waiting_for_judge"), true);
+      onShowMessage({ message: t("waiting_for_judge"), persistent: true, icon: 'loading' });
     });
 
     return () => {
@@ -235,7 +252,7 @@ export const useRoom = ({
     // socket called when judge select the winner card
     // TODO: users should manage with id not username
     socket?.on("winner-card", (resp: string) => {
-      onShowMessage(`winner ${resp}`, false, "winner");
+      onShowMessage({ message: `winner ${resp}`, persistent: false, id: "winner", icon: "winner" });
       setPlayers((state) =>
         state.map((player) =>
           player.username === resp
@@ -256,7 +273,7 @@ export const useRoom = ({
       setJudge(resp.judge);
       setWaitingForJudge(false);
       setPlayerCards([]);
-      onShowMessage(t("starting_next_round"));
+      onShowMessage({ message: t("starting_next_round"), icon: 'success' });
       setGame((state: any) => ({
         ...state,
         round: state.round + 1,

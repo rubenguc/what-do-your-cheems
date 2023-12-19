@@ -185,3 +185,12 @@ export enum Adapater {
   RN = "React native",
   R = "React",
 }
+
+export type OnShowMessageIcon = 'success' | 'loading' | 'winner'
+
+export interface OnShowMessage {
+  message: string;
+  persistent?: boolean;
+  id?: string;
+  icon: OnShowMessageIcon;
+}

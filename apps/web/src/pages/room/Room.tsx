@@ -1,14 +1,15 @@
-import { Cards, FinishGame, JudgeCard, Players } from './components';
-import JSConfetti from 'js-confetti';
-import { useEffect } from 'react';
-import { useUserContext, useRoom } from 'wdyc-shared-ui/hooks';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { FaCrown } from 'react-icons/fa';
-import { useToast } from '../../hooks/common';
+import { Cards, FinishGame, JudgeCard, Players } from "./components";
+import JSConfetti from "js-confetti";
+import { useEffect } from "react";
+import { useUserContext, useRoom } from "wdyc-shared-ui/hooks";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useToast } from "../../hooks/common";
+import { MenuContainer } from "../../components/common";
+import { FaCrown } from "react-icons/fa";
 
 export const Room = () => {
-  const { t } = useTranslation('room');
+  const { t } = useTranslation("room");
 
   const jsConfetti = new JSConfetti();
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export const Room = () => {
   const { user, clear } = useUserContext();
 
   const onClear = () => {
-    localStorage.removeItem('user');
+    localStorage.removeItem("user");
     clear();
   };
 
@@ -57,90 +58,66 @@ export const Room = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [game.winner, userIsWinner]);
 
-
-
   if (game.isEnded) {
     return (
-      <>
-      </>
-      // <Box
-      //   py={2}
-      //   display="flex"
-      //   flexDirection="column"
-      //   h="full"
-      //   justifyContent="center"
-      // >
-      //   <Card bgColor="white" width="full" maxW="md" mx="auto">
-      //     <CardBody>
-      //       <Box mb={3} textAlign="center">
-      //         {game.winner ? (
-      //           <Box
-      //             display="flex"
-      //             alignItems="center"
-      //             gap={2}
-      //             justifyContent="center"
-      //             fontSize="4xl"
-      //             fontWeight="bold"
-      //           >
-      //             <FaCrown color="#d9a760" />
-      //             <Text color="black">{game.winner}</Text>
-      //           </Box>
-      //         ) : (
-      //           <Text fontSize="4xl" fontWeight="bold">
-      //             {t('tie')}
-      //           </Text>
-      //         )}
-      //       </Box>
+      <div className="flex flex-col justify-center items-center h-full py-2  ">
+        <MenuContainer>
+          <div className="mb-3 text-center">
+            {game.winner ? (
+              <div className="flex items-center gap-2 justify-center text-4xl font-bold mb-3">
+                <FaCrown color="#d9a760" />
+                <p>{game.winner}</p>
+              </div>
+            ) : (
+              <p className="text-4xl font-bold mb-3">{t("tie")}</p>
+            )}
 
-      //       <TableContainer>
-      //         <Table variant="simple">
-      //           <Thead>
-      //             <Tr>
-      //               <Th textTransform="capitalize">{t('player')}</Th>
-      //               <Th textAlign="center" textTransform="capitalize">
-      //                 {t('number_of_wins')}
-      //               </Th>
-      //             </Tr>
-      //           </Thead>
-      //           <Tbody>
-      //             {game.players?.map((player) => (
-      //               <Tr key={player.username}>
-      //                 <Td>{player.username}</Td>
-      //                 <Td textAlign="center">{player.numberOfWins}</Td>
-      //               </Tr>
-      //             ))}
-      //           </Tbody>
-      //         </Table>
-      //       </TableContainer>
+            <div className="relative overflow-x-auto">
+              <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th scope="col" className="px-6 py-3">{t("player")}</th>
+                    <th scope="col" className="px-6 py-3">{t("number_of_wins")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {game.players?.map((player) => (
+                    <tr key={player.username} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                      <td className="px-6 py-4">{player.username}</td>
+                      <td className="px-6 py-4 text-center">{player.numberOfWins}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-      //       <Flex justifyContent="center" mt={5}>
-      //         <Button onClick={goToHome} mx="auto">
-      //           {t('exit')}
-      //         </Button>
-      //       </Flex>
-      //     </CardBody>
-      //   </Card>
-      // </Box>
+            <div className="flex justify-center mt-5">
+              <button
+                className="px-4 py-2 bg-gray-700 text-white rounded-md"
+                onClick={goToHome}
+              >
+                {t("exit")}
+              </button>
+            </div>
+          </div>
+        </MenuContainer>
+      </div>
     );
   }
 
-  console.log({
-    players
-  })
-
   return (
-    <div className='flex flex-col h-full'>
-      <div className='flex justify-between px-2 py-2 bg-gray-700'>
+    <div className="flex flex-col h-full">
+      <div className="flex justify-between px-2 py-2 bg-gray-700">
         <p></p>
         <p color="white">
-          {t('round')}: {game.round}/{game.config?.totalRounds}
+          {t("round")}: {game.round}/{game.config?.totalRounds}
         </p>
         {isRoomCreator && <FinishGame finishGame={finishGame} />}
       </div>
 
-      <div className='flex flex-col py-2 flex-1'>
-
-        <div className='flex-1'>
+      <div className="flex flex-col py-2 flex-1">
+        <div className="flex-1">
+          <p>judge: {judge.username}</p>
           <JudgeCard judge={judge} />
         </div>
 
@@ -156,8 +133,6 @@ export const Room = () => {
           <Players players={players} judgeUsername={judge.username} />
         </div>
       </div>
-
     </div>
-
   );
 };

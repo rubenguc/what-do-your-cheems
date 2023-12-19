@@ -13,13 +13,12 @@ export const WaitingRoom = () => {
   const { user, clear, startRoom } = useUserContext();
 
   const { showErrorToast, showInfoToast } = useToast();
-  const { isOpenModal, onCloseModal, onOpenModal } = useModal()
+  const { isOpenModal, onCloseModal, onOpenModal } = useModal();
 
   const onClear = () => {
     localStorage.removeItem("user");
     clear();
   };
-
 
   const {
     players,
@@ -40,13 +39,12 @@ export const WaitingRoom = () => {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(user.roomCode);
-      showInfoToast("code_copied");
+      // TODO: add icon
+      showInfoToast(t("code_copied"));
     } catch (error) {
       console.error(error);
     }
   };
-
-
 
   return (
     <div className="flex flex-col items-center h-full justify-center">
@@ -61,7 +59,6 @@ export const WaitingRoom = () => {
           <BiCopy />
         </button>
         <div className="flex flex-col gap4-">
-
           {isRoomCreator && (
             <RoomConfig
               startGame={startGame}
@@ -74,23 +71,19 @@ export const WaitingRoom = () => {
 
           <hr />
 
-          <WaitingPlayers
-            players={players}
-          />
-
+          <WaitingPlayers players={players} />
         </div>
-
 
         {!isRoomCreator && (
           <button
+            className="w-full mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
             onClick={onOpenModal}
             disabled={isLoading}
           // isLoading={isLoading}
           >
-            {t('leave_room')}
+            {t("leave_room")}
           </button>
         )}
-
 
         <ConfirmModal
           isOpen={isOpenModal}
@@ -98,16 +91,10 @@ export const WaitingRoom = () => {
           onConfirm={!isRoomCreator ? leaveRoom : closeRoom}
           isLoading={isLoading}
           message={
-            !isRoomCreator ? t('leave_room_confirm') : t('close_room_confirm')
+            !isRoomCreator ? t("leave_room_confirm") : t("close_room_confirm")
           }
         />
-
       </MenuContainer>
-
-
     </div>
-
-
-
   );
 };

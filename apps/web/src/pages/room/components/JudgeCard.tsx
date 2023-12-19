@@ -9,7 +9,6 @@ interface JudgeCardProps {
 export const JudgeCard: FC<JudgeCardProps> = ({ judge }) => {
   const imageOrientiation = judge.card.imageOrientation;
 
-  console.log(JudgeCard)
 
   return (
     <div

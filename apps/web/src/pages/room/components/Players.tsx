@@ -8,6 +8,7 @@ interface PlayersProps {
 }
 
 export const Players: FC<PlayersProps> = ({ players, judgeUsername }) => {
+
   return (
     <div
       className="flex flex-row overflow-x-auto py-1 gap-5 px-3 justify-center"
@@ -15,7 +16,7 @@ export const Players: FC<PlayersProps> = ({ players, judgeUsername }) => {
       {players.map((player, index) => (
         <div key={index.toString()} className="relative">
           <div className="flex relative border-2 border-white rounded-full overflow-visible">
-            <img src={AVATARS[player.avatar]} alt="" className="w-10 h-10" />
+            <img src={AVATARS[player.avatar]} alt="" className="w-10 h-10 rounded-full" />
 
             {
               judgeUsername === player.username && (
