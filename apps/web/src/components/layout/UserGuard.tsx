@@ -6,17 +6,17 @@ export const UserGuard: FC<PropsWithChildren> = ({ children }) => {
   const { pathname } = useLocation();
   const { user } = useUserContext();
 
-  if (!user?.roomCode && pathname !== '/') {
-    return <Navigate to="/" />;
-  }
+  // if (!user?.roomCode && pathname !== '/') {
+  //   return <Navigate to="/" />;
+  // }
 
-  if (user?.roomCode && !user?.roomIsStarted && pathname !== '/waiting-room') {
-    return <Navigate to="/waiting-room" />;
-  }
+  // if (user?.roomCode && !user?.roomIsStarted && pathname !== '/waiting-room') {
+  //   return <Navigate to="/waiting-room" />;
+  // }
 
-  if (user?.roomCode && user?.roomIsStarted && pathname !== '/room') {
-    return <Navigate to="/room" />;
-  }
+  // if (user?.roomCode && user?.roomIsStarted && pathname !== '/room') {
+  //   return <Navigate to="/room" />;
+  // }
 
   return <>{children}</>;
 };
