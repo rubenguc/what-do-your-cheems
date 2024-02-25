@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import { useToast } from "../../hooks/common";
 import { MenuContainer } from "../../components/common";
 import { FaCrown } from "react-icons/fa";
+import { DndContext } from '@dnd-kit/core';
+import { Card } from "wdyc-interfaces";
 
 export const Room = () => {
   const { t } = useTranslation("room");
@@ -106,33 +108,38 @@ export const Room = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex justify-between px-2 py-2 bg-gray-700">
-        <p></p>
-        <p color="white">
-          {t("round")}: {game.round}/{game.config?.totalRounds}
-        </p>
-        {isRoomCreator && <FinishGame finishGame={finishGame} />}
-      </div>
-
-      <div className="flex flex-col py-2 flex-1">
-        <div className="flex-1">
-          <p>judge: {judge.username}</p>
-          <JudgeCard judge={judge} />
+    <DndContext onDragEnd={(event) => {
+      if (event.over && event.over.id === 'droppable') {
+        const card = event.active.data.current as Card;
+        setCard(card);
+      }
+    }}>
+      <div className="flex flex-col h-full">
+        <div className="flex items-center justify-between px-2 py-2 bg-primary-default">
+          <p color="white">
+            {t("round")}: {game.round}/{game.config?.totalRounds}
+          </p>
+          {isRoomCreator && <FinishGame finishGame={finishGame} />}
         </div>
 
-        <div>
-          <Cards
-            cards={cardsToSelect}
-            setCard={setCard}
-            waitingForJudge={waitingForJudge}
-            playerCards={playerCards}
-            isJudge={isJudge}
-          />
+        <div className="flex flex-col pt-2 flex-1">
+          <div className="flex-1">
+            <JudgeCard judge={judge} />
+          </div>
 
-          <Players players={players} judgeUsername={judge.username} />
+          <div>
+            <Cards
+              cards={cardsToSelect}
+              setCard={setCard}
+              waitingForJudge={waitingForJudge}
+              playerCards={playerCards}
+              isJudge={isJudge}
+            />
+
+            <Players players={players} judgeUsername={judge.username} />
+          </div>
         </div>
       </div>
-    </div>
+    </DndContext>
   );
 };

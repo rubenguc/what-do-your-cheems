@@ -20,7 +20,7 @@ const LINKS = [
     icon: <BsTelegram className="w-4 h-4" />,
   },
   {
-    title: "give_me_a_star",
+    title: "source_code",
     link: GITHUB_LINK,
     icon: <BsGithub className="w-4 h-4" />,
   },
@@ -88,7 +88,7 @@ export const Home = () => {
           <MenuContainer>
             <div className="flex flex-col gap-4">
               {OPTIONS.map((option, index) => (
-                <Button key={index} onClick={() => setSelectedOption(option)}>
+                <Button key={index} onClick={() => setSelectedOption(option as "create_game" | "join_game")}>
                   {t(option)}
                 </Button>
               ))}

@@ -14,7 +14,7 @@ export const MenuContainer: FC<MenuContainerProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 w-full mt-10">
+      className="max-w-sm p-6 bg-primary-default rounded-lg shadow w-full mt-10">
 
       {
         children

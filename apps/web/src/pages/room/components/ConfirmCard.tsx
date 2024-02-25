@@ -32,7 +32,7 @@ export const ConfirmCard: FC<ConfirmCardProps> = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/60" />
+          <div className="fixed inset-0 bg-black/70" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -46,7 +46,7 @@ export const ConfirmCard: FC<ConfirmCardProps> = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className={`w-full max-w-md transform overflow-hidden p-6 text-left align-middle shadow-xl transition-all`}>
+              <Dialog.Panel className={`w-full max-w-md transform overflow-hidden p-6 text-left align-middle transition-all`}>
                 <div className="mt-2 flex justify-center">
                   {card && <Card card={card} />}
                 </div>

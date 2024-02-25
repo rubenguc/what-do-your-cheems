@@ -15,7 +15,7 @@ export const FinishGame: FC<FinishGameProps> = ({ finishGame }) => {
 
   return (
     <>
-      <Button size="xs" onClick={onOpenModal}>
+      <Button onClick={onOpenModal} className='!text-sm !md:text-base !px-2 !md:px-2'>
         {t('finish_game')}
       </Button>
 
