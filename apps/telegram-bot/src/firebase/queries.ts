@@ -55,7 +55,7 @@ export const updateOrCreateChatIfNotExists = async ({
     return saveChat({ chatId, username });
   }
 
-  return updateChat(chatId, command);
+  return updateChat(chatId, command as string);
 };
 
 export const saveContribution = async ({

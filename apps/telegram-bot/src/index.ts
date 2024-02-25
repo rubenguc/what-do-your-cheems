@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Telegraf } from "telegraf";
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { development, production } from "./core";
@@ -11,6 +12,7 @@ import { BOT_TOKEN, ENVIRONMENT } from "./env";
 
 const bot = new Telegraf(BOT_TOKEN);
 
+// tslint:disable-next-line: no-console
 bot.command("ping", ping());
 bot.command("start", start());
 bot.command("github", github());
