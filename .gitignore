@@ -3,3 +3,4 @@ node_modules
 volumes
 .env
 dist/
+.DS_Store

@@ -1,0 +1,29 @@
+{
+  "name": "telegram-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "DEBUG=bot* dotenv -- ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "ncc build src/index.ts -o public -m"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/firestore": "^7.3.0",
+    "@vercel/node": "^3.0.20",
+    "axios": "^1.6.7",
+    "dotenv-cli": "^7.3.0",
+    "firebase": "^10.8.0",
+    "telegraf": "^4.16.0"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.12",
+    "@types/node": "^20.3.1",
+    "@vercel/ncc": "^0.38.1",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
+  }
+}

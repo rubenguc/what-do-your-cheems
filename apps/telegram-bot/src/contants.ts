@@ -1,0 +1,4 @@
+export const COMMANDS = {
+  PHRASE_TO_ANSWER: "PHRASE_TO_ANSWER",
+  IMAGE: "IMAGE",
+};
