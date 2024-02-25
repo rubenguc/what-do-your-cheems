@@ -13,7 +13,5 @@ export const getLanguageFromMessage = (ctx: ChatContext): string => {
 export const getMessage = (ctx: ChatContext, message: string): string => {
   const language = getLanguageFromMessage(ctx);
 
-  console.log(language);
-
   return MESSAGES[language]?.[message] || MESSAGES["en"][message];
 };

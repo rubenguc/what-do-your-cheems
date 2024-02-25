@@ -46,11 +46,6 @@ export const uploadMeme = () => async (ctx: ChatContext) => {
 
       const isDocument = Boolean(ctx.update.message.document);
 
-      console.log("isDocument", {
-        document: ctx.update.message.document,
-        isDocument,
-      });
-
       if (isDocument) {
         const mymeType: string = ctx.update.message.document.mime_type || "";
 
