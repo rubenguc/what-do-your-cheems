@@ -1,11 +1,11 @@
-import createDebug from "debug";
+// import createDebug from "debug";
 import { updateOrCreateChatIfNotExists } from "../firebase/queries";
 import { getChatInfo } from "../utils/chat";
 import { getMessage } from "../utils/language";
 import { COMMANDS } from "../contants";
 import { ChatContext } from "../interfaces";
 
-const debug = createDebug("bot:meme");
+// const debug = createDebug("bot:meme");
 
 export const meme = () => async (ctx: ChatContext) => {
   try {
@@ -17,7 +17,7 @@ export const meme = () => async (ctx: ChatContext) => {
       command: COMMANDS.IMAGE,
     });
 
-    debug(`Triggered "meme"`);
+    // debug(`Triggered "meme"`);
 
     await ctx.reply(getMessage(ctx, "upload_meme"));
   } catch (error) {

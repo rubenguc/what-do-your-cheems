@@ -1,11 +1,11 @@
-import createDebug from "debug";
+// import createDebug from "debug";
 import { updateOrCreateChatIfNotExists } from "../firebase/queries";
 import { getChatInfo } from "../utils/chat";
 import { getMessage } from "../utils/language";
 import { COMMANDS } from "../contants";
 import { ChatContext } from "../interfaces";
 
-const debug = createDebug("bot:phrase");
+// const debug = createDebug("bot:phrase");
 
 export const phrase = () => async (ctx: ChatContext) => {
   try {
@@ -17,7 +17,7 @@ export const phrase = () => async (ctx: ChatContext) => {
       command: COMMANDS.PHRASE_TO_ANSWER,
     });
 
-    debug(`Triggered "phrase"`);
+    // debug(`Triggered "phrase"`);
 
     await ctx.reply(getMessage(ctx, "upload_phrase_to_answer"));
   } catch (error) {

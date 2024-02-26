@@ -1,4 +1,4 @@
-import createDebug from "debug";
+// import createDebug from "debug";
 import { getChat, saveContribution, updateChat } from "../firebase/queries";
 import { getChatInfo } from "../utils/chat";
 import { getMessage } from "../utils/language";
@@ -7,7 +7,7 @@ import axios from "axios";
 import { ChatContext } from "../interfaces";
 import { BOT_TOKEN } from "../env";
 
-const debug = createDebug("bot:uploadPhrase");
+// const debug = createDebug("bot:uploadPhrase");
 
 export const uploadPhrase = () => async (ctx: ChatContext) => {
   try {
@@ -17,7 +17,7 @@ export const uploadPhrase = () => async (ctx: ChatContext) => {
     const chatData = chat.docs[0].data();
 
     if (chatData.command === COMMANDS.PHRASE_TO_ANSWER) {
-      debug(`Triggered "uploadPhrase"`);
+      // debug(`Triggered "uploadPhrase"`);
 
       await saveContribution({
         chatId,
@@ -42,7 +42,7 @@ export const uploadMeme = () => async (ctx: ChatContext) => {
     const chatData = chat.docs[0].data();
 
     if (chatData.command === COMMANDS.IMAGE) {
-      debug(`Triggered "uploadMeme"`);
+      // debug(`Triggered "uploadMeme"`);
 
       const isDocument = Boolean(ctx.update.message.document);
 
