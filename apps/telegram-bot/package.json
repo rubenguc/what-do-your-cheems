@@ -11,11 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/firestore": "^7.3.0",
     "@vercel/node": "^3.0.20",
     "axios": "^1.6.7",
     "dotenv-cli": "^7.3.0",
-    "firebase": "^10.8.0",
     "telegraf": "^4.16.0"
   },
   "devDependencies": {

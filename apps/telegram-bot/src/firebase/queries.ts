@@ -1,5 +1,8 @@
-import { chatsDB, contributionsDB } from ".";
-import { COMMANDS } from "../contants";
+import axios from "axios";
+
+const firebaseAPI = axios.create({
+  baseURL: `https://firestore.googleapis.com/v1/projects/${process.env.FIREBASE_PROJECT_ID}/databases/(default)/documents/`,
+});
 
 interface Chat {
   chatId: number;
@@ -7,37 +10,63 @@ interface Chat {
   command?: string;
 }
 
+const createChat = async ({ chatId, username, command }: Chat) => {
+  await firebaseAPI.post("chats", {
+    fields: {
+      chatId: { integerValue: chatId },
+      username: { stringValue: username },
+      command: { stringValue: command },
+    },
+  });
+};
+
+const getChatByChatId = async (chatId: number) => {
+  const response = await firebaseAPI.get(`chats`);
+
+  return response.data.documents?.find(
+    (chat: any) => chat.fields.chatId?.integerValue == chatId
+  );
+};
+
 export const saveChat = async ({ chatId, username }: Chat) => {
-  const result = await chatsDB.add({
+  const result = await createChat({
     chatId,
     username,
     command: "",
-    createdAt: new Date().getTime(),
   });
 
   return result;
 };
 
 export const getChat = async (chatId: number) => {
-  const result = await chatsDB.where("chatId", "==", chatId).get();
+  const result = await getChatByChatId(chatId);
 
-  return result;
+  if (!result) {
+    return null;
+  }
+
+  return {
+    id: result.name.split("/").pop(),
+    chatId: result.fields.chatId.integerValue,
+    username: result.fields.username.stringValue,
+    command: result.fields.command.stringValue,
+  };
 };
 
 export const updateChat = async (chatId: number, command: string) => {
-  const result = await getChat(chatId);
+  const chat = await getChat(chatId);
 
-  await chatsDB.doc(result.docs[0].id).update({
-    command,
+  await firebaseAPI.patch(`chats/${chat?.id}?updateMask.fieldPaths=command`, {
+    fields: {
+      command: { stringValue: command },
+    },
   });
-
-  return result;
 };
 
 export const createChatIfNotExists = async ({ chatId, username }: Chat) => {
   const chat = await getChat(chatId);
 
-  if (chat.empty) {
+  if (!chat) {
     return saveChat({ chatId, username });
   }
 
@@ -51,7 +80,7 @@ export const updateOrCreateChatIfNotExists = async ({
 }: Chat) => {
   const chat = await getChat(chatId);
 
-  if (chat.empty) {
+  if (!chat) {
     return saveChat({ chatId, username });
   }
 
@@ -69,12 +98,16 @@ export const saveContribution = async ({
   uploadedBy: string;
   chatId: number;
 }) => {
-  const result = await contributionsDB.add({
-    chatId,
-    content,
-    type,
-    uploadedBy,
-    createdAt: new Date().getTime(),
+  const result = await firebaseAPI.post(`contributions`, {
+    fields: {
+      chatId: { integerValue: chatId },
+      content: { stringValue: content },
+      type: { stringValue: type },
+      uploadedBy: { stringValue: uploadedBy },
+    },
+    createTime: new Date().toISOString(),
+    updateTime: new Date().toISOString(),
   });
+
   return result;
 };

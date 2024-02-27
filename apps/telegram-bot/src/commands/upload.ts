@@ -1,4 +1,3 @@
-// import createDebug from "debug";
 import { getChat, saveContribution, updateChat } from "../firebase/queries";
 import { getChatInfo } from "../utils/chat";
 import { getMessage } from "../utils/language";
@@ -7,18 +6,13 @@ import axios from "axios";
 import { ChatContext } from "../interfaces";
 import { BOT_TOKEN } from "../env";
 
-// const debug = createDebug("bot:uploadPhrase");
-
 export const uploadPhrase = () => async (ctx: ChatContext) => {
   try {
     const { chatId, username } = getChatInfo(ctx);
 
     const chat = await getChat(chatId);
-    const chatData = chat.docs[0].data();
 
-    if (chatData.command === COMMANDS.PHRASE_TO_ANSWER) {
-      // debug(`Triggered "uploadPhrase"`);
-
+    if (chat?.command === COMMANDS.PHRASE_TO_ANSWER) {
       await saveContribution({
         chatId,
         type: COMMANDS.PHRASE_TO_ANSWER,
@@ -39,11 +33,8 @@ export const uploadMeme = () => async (ctx: ChatContext) => {
     const { chatId, username } = getChatInfo(ctx);
 
     const chat = await getChat(chatId);
-    const chatData = chat.docs[0].data();
 
-    if (chatData.command === COMMANDS.IMAGE) {
-      // debug(`Triggered "uploadMeme"`);
-
+    if (chat?.command === COMMANDS.IMAGE) {
       const isDocument = Boolean(ctx.update.message.document);
 
       if (isDocument) {
