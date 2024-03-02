@@ -1,3 +1,4 @@
+
 version: '3.7'
 services:
   mongo:
@@ -30,26 +31,3 @@ services:
     command: redis-server --requirepass root
     volumes:
       - ./volumes/redis:/data
-
-  server:
-    image: wdyc-server
-    environment:
-      DB_URI: ${DB_URI}
-      DB_NAME: ${DB_NAME}
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
-      REDIS_DB: ${REDIS_DB}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
-      PROJECT_ID: ${PROJECT_ID}
-      STORAGE_TYPE: ${STORAGE_TYPE}
-      STORAGE_TOKEN_URL: ${STORAGE_TOKEN_URL}
-      STORAGE_CLIENT_EMAIL: ${STORAGE_CLIENT_EMAIL}
-      STORAGE_CLIENT_ID: ${STORAGE_CLIENT_ID}
-      STORAGE_PRIVATE_KEY: ${STORAGE_PRIVATE_KEY}
-      BUCKET: ${BUCKET}
-      SENTRY_DSN: ${SENTRY_DSN}
-    ports:
-      - '3000:8080'
-    depends_on:
-      - redis
-      - mongo

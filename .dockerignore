@@ -1,0 +1,6 @@
+apps/server/seed.ts
+apps/server/seed/
+apps/server/test/
+apps/server/README.md
+apps/server/dist/
+apps/server/node_modules/

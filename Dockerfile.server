@@ -1,0 +1,75 @@
+ARG NODE_VERSION=18.18.0
+
+# Alpine image
+FROM node:${NODE_VERSION}-alpine AS alpine
+RUN apk update
+RUN apk add --no-cache libc6-compat
+
+# Setup pnpm and turbo on the alpine base
+FROM alpine as base
+RUN npm install pnpm turbo --global
+RUN pnpm config set store-dir ~/.pnpm-store
+
+# Prune projects
+FROM base AS pruner
+ARG PROJECT=server
+
+WORKDIR /app
+COPY . .
+RUN turbo prune --scope=${PROJECT} --docker
+
+# Build the project
+FROM base AS builder
+ARG PROJECT=server
+
+WORKDIR /app
+
+# Copy lockfile and package.json's of isolated subworkspace
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/out/json/ .
+
+# First install the dependencies (as they change less often)
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+# Copy source code of isolated subworkspace
+COPY --from=pruner /app/out/full/ .
+
+RUN turbo build --filter=${PROJECT}
+# RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm prune --prod --no-optional
+# RUN rm -rf ./**/*/src
+
+FROM base AS builder-prod
+ARG PROJECT=server
+WORKDIR /app
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/out/json/ .
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod
+
+# # Final image
+FROM alpine AS runner
+ARG PROJECT=server
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nestjs
+
+WORKDIR /app
+COPY --from=builder --chown=nestjs:nodejs /app/apps/${PROJECT}/dist ./apps/${PROJECT}/dist
+COPY --from=builder --chown=nestjs:nodejs /app/packages/wdyc-utils/dist ./packages/wdyc-utils/dist
+COPY --from=builder --chown=nestjs:nodejs /app/packages/wdyc-utils/package.json ./packages/wdyc-utils/package.json
+COPY --from=builder-prod --chown=nestjs:nodejs /app/apps/${PROJECT}/node_modules ./apps/${PROJECT}/node_modules
+COPY --from=builder-prod --chown=nestjs:nodejs /app/node_modules ./node_modules
+
+RUN chown nestjs:nodejs .
+RUN chmod -R 777 .
+
+USER nestjs
+
+WORKDIR /app/apps/${PROJECT}
+ARG PORT=8080
+ENV PORT=${PORT}
+ENV NODE_ENV=production
+EXPOSE ${PORT}
+
+CMD node dist/main
