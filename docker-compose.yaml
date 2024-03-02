@@ -53,3 +53,10 @@ services:
     depends_on:
       - redis
       - mongo
+  
+  web:
+    image: wdyc-web
+    ports:
+      - '5000:8080'
+    depends_on:
+      - server

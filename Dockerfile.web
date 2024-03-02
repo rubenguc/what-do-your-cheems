@@ -1,0 +1,57 @@
+ARG NODE_VERSION=18.18.0
+
+# Alpine image
+FROM node:${NODE_VERSION}-alpine AS alpine
+RUN apk update
+RUN apk add --no-cache libc6-compat
+
+# Setup pnpm and turbo on the alpine base
+FROM alpine as base
+RUN npm install pnpm turbo --global
+RUN pnpm config set store-dir ~/.pnpm-store
+
+# Prune projects
+FROM base AS pruner
+ARG PROJECT=web
+
+WORKDIR /app
+COPY . .
+RUN turbo prune --scope=${PROJECT} --docker
+
+# Build the project
+FROM base AS builder
+ARG PROJECT=web
+
+WORKDIR /app
+
+# Copy lockfile and package.json's of isolated subworkspace
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/out/json/ .
+
+# First install the dependencies (as they change less often)
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+# Copy source code of isolated subworkspace
+COPY --from=pruner /app/out/full/ .
+
+ENV VITE_SOCKET_URL=localhost:3000
+ENV VITE_TELEGRAM_LINK=https://t.me/wdyc_bot
+ENV VITE_GITHUB_LINK=https://github.com/rubenguc/what-do-your-cheems
+
+RUN turbo build --filter=${PROJECT}
+
+# CMD ["tail", "-f", "/dev/null"]
+
+# Final image
+FROM nginx:alpine AS runner
+ARG PROJECT=web
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nestjs
+
+COPY --from=builder --chown=nestjs:nodejs /app/apps/${PROJECT}/dist /usr/share/nginx/html
+COPY --from=builder --chown=nestjs:nodejs /app/apps/${PROJECT}/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 8080
+CMD ["nginx", "-g", "daemon off;"]
